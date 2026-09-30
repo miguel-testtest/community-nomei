@@ -1,0 +1,1888 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nomei Community: Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          background: 'var(--background)',
+          foreground: 'var(--foreground)',
+          card: { DEFAULT: 'var(--card)', foreground: 'var(--card-foreground)' },
+          popover: { DEFAULT: 'var(--popover)', foreground: 'var(--popover-foreground)' },
+          primary: { DEFAULT: 'var(--primary)', foreground: 'var(--primary-foreground)', hover: 'var(--color-primary-hover)' },
+          secondary: { DEFAULT: 'var(--secondary)', foreground: 'var(--secondary-foreground)' },
+          muted: { DEFAULT: 'var(--muted)', foreground: 'var(--muted-foreground)' },
+          accent: { DEFAULT: 'var(--accent)', foreground: 'var(--accent-foreground)' },
+          destructive: 'var(--destructive)',
+          border: 'var(--border)',
+          input: 'var(--input)',
+          ring: 'var(--ring)',
+          surface: 'var(--surface)',
+          warning: 'var(--warning)',
+          'subtle-foreground': 'var(--text-xsoft)',
+          yellow: 'var(--color-yellow)',
+          blue: 'var(--color-blue)',
+          indigo: 'var(--color-indigo)',
+          orange: 'var(--color-orange)',
+          violet: 'var(--color-violet)',
+          red: 'var(--color-red)',
+          green: 'var(--color-green)',
+          purple: 'var(--color-purple)',
+          klein: { 500: 'var(--color-klein-500)' },
+          zen: { pearl: '#f7f8f9', 'pearl-dark': '#e0e5e9' },
+        },
+        borderRadius: {
+          sm: 'var(--radius-sm)',
+          md: 'var(--radius-md)',
+          lg: 'var(--radius-lg)',
+          xl: 'var(--radius-xl)',
+          '2xl': 'var(--radius-2xl)',
+          '3xl': 'var(--radius-3xl)',
+          '4xl': 'var(--radius-4xl)',
+        },
+        fontFamily: {
+          sans: ['DM Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          'dm-sans': ['DM Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        fontSize: {
+          '2xs': '0.6875rem',
+          compact: '0.8125rem',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --background: #f8f9fa;
+    --foreground: #231921;
+    --card: #ffffff;
+    --card-foreground: #231921;
+    --popover: #ffffff;
+    --popover-foreground: #231921;
+    --primary: #3dbd8e;
+    --primary-foreground: #ffffff;
+    --secondary: #e9ecef;
+    --secondary-foreground: #231921;
+    --muted: #e9ecef;
+    --muted-foreground: #6b6470;
+    --accent: #cbe8df;
+    --accent-foreground: #1a5c47;
+    --destructive: #dc2626;
+    --border: #dde2ea;
+    --input: #dde2ea;
+    --ring: #3dbd8e;
+
+    --sidebar: #edf0f5;
+    --sidebar-foreground: #231921;
+    --sidebar-accent: #e9ecef;
+    --sidebar-border: #dde2ea;
+
+    --text-xsoft: #a09aa4;
+    --surface: #edf0f5;
+    --warning: #d97706;
+
+    --radius: 0.875rem;
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+
+    --color-primary-hover: #5c9a94;
+    --color-blue: #2a8bbf;
+    --color-indigo: #534ab7;
+    --color-orange: #c2631a;
+    --color-violet: #6c4fc2;
+    --color-red: #c23a3a;
+    --color-green: #0F6E56;
+    --color-yellow: #c2a61a;
+    --color-purple: #8b45c2;
+    --color-klein-500: oklch(89.67% 0.0368 285.63);
+  }
+
+  html, body { background: var(--background); color: var(--foreground); font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+
+  .text-h1 { font-family: "DM Sans", sans-serif; font-size: 32px; line-height: 1.2; font-weight: 400; }
+  .text-h2 { font-family: "DM Sans", sans-serif; font-size: 24px; line-height: 1.2; font-weight: 400; }
+  .text-h3 { font-size: 18px; line-height: 1.2; font-weight: 600; }
+  .text-c1 { font-size: 14px; line-height: 1.5; font-weight: 400; }
+  .text-c2 { font-size: 12px; line-height: 1.5; font-weight: 400; }
+
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thumb-border::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+  .scrollbar-track-transparent::-webkit-scrollbar-track { background: transparent; }
+
+  @keyframes coach-fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-coach-fade-up { animation: coach-fade-up 0.4s ease-out both; }
+
+  .hidden-screen { display: none !important; }
+  .sector-chip { cursor: pointer; }
+</style>
+</head>
+<body class="bg-background">
+
+  <!-- ══════════════════════════════════ DISCOVER SCREEN ══════════════════════════════════ -->
+    <section id="screen-discover" class="proto-screen flex h-screen w-full overflow-hidden bg-background">
+
+      <!-- Main sidebar (Navbar) -->
+      <aside class="flex w-[230px] flex-shrink-0 flex-col justify-between bg-sidebar px-3 py-4">
+        <div>
+          <div class="mb-6 flex items-center gap-2 px-2">
+            <i data-lucide="circle-dot" class="h-5 w-5 text-primary"></i>
+            <span class="text-lg font-bold text-foreground">nomei</span>
+          </div>
+          <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="home" class="h-4 w-4"></i>Home</a>
+          </nav>
+          <div class="mt-5 mb-2 px-2.5 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Features</div>
+          <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="message-circle" class="h-4 w-4 text-indigo"></i>Companion</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="graduation-cap" class="h-4 w-4 text-blue"></i>Coaching</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="clipboard-list" class="h-4 w-4 text-orange"></i>Plans</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="activity" class="h-4 w-4 text-violet"></i>Audio Tracks</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="target" class="h-4 w-4 text-red"></i>Reflections</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="image" class="h-4 w-4 text-green"></i>Vision Board</a>
+          </nav>
+          <div class="mt-5 mb-2 px-2.5 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Explore</div>
+          <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-2.5 rounded-lg bg-accent/50 px-2.5 py-2 text-[13.5px] font-semibold text-accent-foreground"><i data-lucide="megaphone" class="h-4 w-4 text-yellow"></i>Communities</a>
+          </nav>
+        </div>
+        <div class="flex flex-col gap-3 border-t border-sidebar-border pt-3">
+          <div class="flex items-center justify-between px-1">
+            <span class="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"><i data-lucide="coins" class="h-3.5 w-3.5 text-yellow"></i>90489.16 credits</span>
+            <span class="relative"><i data-lucide="bell" class="h-4 w-4 text-muted-foreground"></i><span class="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-purple text-[9px] font-bold text-white">1</span></span>
+          </div>
+          <div class="flex items-center gap-2 rounded-lg px-1 py-1">
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white" style="background:#3dbd8e">K</div>
+            <span class="flex-1 truncate text-sm font-medium text-foreground">Kate</span>
+            <span class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Basic</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex min-w-0 flex-1 flex-col overflow-y-auto bg-background">
+        <div class="flex items-center justify-between px-10 pt-4">
+          <h1 class="text-h1 text-foreground">Community</h1>
+          <button onclick="jumpTo('create')" class="cursor-pointer rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground transition hover:bg-primary hover:text-white">New Community</button>
+        </div>
+
+        <div class="mt-4 flex shrink-0 items-center gap-6 border-b border-border px-10">
+          <button class="relative pb-3 pt-3.5 text-sm font-medium capitalize text-muted-foreground">Feed</button>
+          <button class="relative pb-3 pt-3.5 text-sm font-medium capitalize text-foreground after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-yellow">Discover</button>
+        </div>
+
+        <div class="flex w-full flex-col gap-6 px-10 py-6">
+          <div class="flex flex-row items-center justify-between gap-3">
+            <div class="flex flex-wrap gap-2">
+              <button onclick="toggleSectorPill(this)" data-selected="true" class="sector-pill cursor-pointer rounded-lg border border-primary bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm">Therapists</button>
+              <button onclick="toggleSectorPill(this)" data-selected="false" class="sector-pill cursor-pointer rounded-lg border border-transparent bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">Coaches</button>
+              <button onclick="toggleSectorPill(this)" data-selected="false" class="sector-pill cursor-pointer rounded-lg border border-transparent bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">Business</button>
+              <button onclick="toggleSectorPill(this)" data-selected="false" class="sector-pill cursor-pointer rounded-lg border border-transparent bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">Wellness</button>
+              <button onclick="toggleSectorPill(this)" data-selected="false" class="sector-pill cursor-pointer rounded-lg border border-transparent bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">Self-improvement</button>
+              <button onclick="toggleSectorPill(this)" data-selected="false" class="sector-pill cursor-pointer rounded-lg border border-transparent bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">Spiritual</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <div id="filter-wrapper" class="relative">
+                <button onclick="toggleFilterDropdown(event)" class="flex h-[2.5rem] cursor-pointer items-center gap-2 rounded-xl border-[1.5px] border-border bg-card px-4 text-sm font-medium text-foreground hover:bg-muted/50">
+                  <i data-lucide="filter" class="h-3.5 w-3.5 text-muted-foreground"></i>
+                  Filter
+                  <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground"></i>
+                </button>
+                <div id="filter-dropdown" class="hidden-screen absolute right-0 z-20 mt-2 w-56 rounded-xl border border-border bg-popover p-2 shadow-lg">
+                  <button onclick="selectBrowseView(this)" data-selected="true" class="browse-option flex w-full cursor-pointer items-center justify-between rounded-lg bg-accent/50 px-3 py-2 text-left text-sm font-semibold text-foreground">
+                    <span class="flex items-center gap-2"><i data-lucide="layout-grid" class="h-3.5 w-3.5"></i>All</span>
+                    <i data-lucide="check" class="check-icon h-3.5 w-3.5 text-accent-foreground"></i>
+                  </button>
+                  <button onclick="selectBrowseView(this)" data-selected="false" class="browse-option flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:bg-muted/50">
+                    <span class="flex items-center gap-2"><i data-lucide="users" class="h-3.5 w-3.5"></i>My communities</span>
+                    <i data-lucide="check" class="check-icon hidden-screen h-3.5 w-3.5 text-accent-foreground"></i>
+                  </button>
+                  <button onclick="selectBrowseView(this)" data-selected="false" class="browse-option flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:bg-muted/50">
+                    <span class="flex items-center gap-2"><i data-lucide="shield" class="h-3.5 w-3.5"></i>Managed</span>
+                    <i data-lucide="check" class="check-icon hidden-screen h-3.5 w-3.5 text-accent-foreground"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="relative flex h-[2.5rem] w-[220px] shrink-0 items-center rounded-xl border-[1.5px] border-border bg-card">
+                <i data-lucide="search" class="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-foreground opacity-45"></i>
+                <input placeholder="Search communities..." class="h-full w-full rounded-xl border-none bg-transparent py-0 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-compact text-muted-foreground">4 communities</p>
+            <select class="shrink-0 rounded-[var(--radius-sm)] border border-border bg-card px-3 py-1.5 text-compact text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow/40">
+              <option>Newest</option>
+            </select>
+          </div>
+
+          <!-- Community grid: click a card to open its Dashboard -->
+          <div class="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+
+            <button onclick="openCommunity('positivity')" class="animate-coach-fade-up group relative flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <div class="relative h-28 w-full overflow-hidden bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40">
+                <img src="images.jpeg" alt="" class="h-full w-full object-cover" />
+                <div class="absolute bottom-2.5 left-2.5 flex w-fit max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-xl bg-black/30 px-2.5 py-1.5 backdrop-blur-md">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white">EP</div>
+                  <span class="truncate text-xs font-semibold text-white">Everyday Positivity</span>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-2.5 p-4">
+                <div class="flex items-center gap-2 text-2xs text-muted-foreground"><span>1 member</span><span class="h-[3px] w-[3px] shrink-0 rounded-full bg-border"></span><span>0 posts</span></div>
+                <p class="line-clamp-2 text-compact leading-relaxed text-muted-foreground">Daily gratitude prompts, small wins and mindful living, curated by wellness coach Kate Cocker.</p>
+                <div class="mt-auto flex flex-wrap items-center gap-1.5">
+                  <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-2xs font-medium capitalize text-muted-foreground">Self-improvement</span>
+                  <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-2xs font-medium capitalize text-muted-foreground">Wellness</span>
+                </div>
+              </div>
+            </button>
+
+            <button onclick="openCommunity('mindful')" class="animate-coach-fade-up group relative flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <div class="relative h-28 w-full overflow-hidden bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40">
+                <img src="https://picsum.photos/seed/nomei-mindful/480/200" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute bottom-2.5 left-2.5 flex w-fit max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-xl bg-black/30 px-2.5 py-1.5 backdrop-blur-md">
+                  <img src="https://i.pravatar.cc/40?img=15" alt="" class="h-7 w-7 shrink-0 rounded-lg object-cover" />
+                  <span class="truncate text-xs font-semibold text-white">Mindful Practice</span>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-2.5 p-4">
+                <div class="flex items-center gap-2 text-2xs text-muted-foreground"><span>1.2k members</span><span class="h-[3px] w-[3px] shrink-0 rounded-full bg-border"></span><span>340 posts</span></div>
+                <p class="line-clamp-2 text-compact leading-relaxed text-muted-foreground">A space for licensed therapists to share resources, case studies and support each other.</p>
+                <div class="mt-auto flex flex-wrap items-center gap-1.5">
+                  <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-2xs font-medium capitalize text-muted-foreground">Therapists</span>
+                  <span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-2xs font-medium capitalize text-muted-foreground">Wellness</span>
+                  <span class="text-2xs text-muted-foreground">+2 more</span>
+                </div>
+              </div>
+            </button>
+
+            <button onclick="openCommunity('coaches')" class="animate-coach-fade-up group relative flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <div class="relative h-28 w-full overflow-hidden bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40">
+                <img src="https://picsum.photos/seed/nomei-coaches/480/200" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute bottom-2.5 left-2.5 flex w-fit max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-xl bg-black/30 px-2.5 py-1.5 backdrop-blur-md">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white">CC</div>
+                  <span class="truncate text-xs font-semibold text-white">Coaches Circle</span>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-2.5 p-4">
+                <div class="flex items-center gap-2 text-2xs text-muted-foreground"><span>86 members</span><span class="h-[3px] w-[3px] shrink-0 rounded-full bg-border"></span><span>12 posts</span></div>
+                <p class="line-clamp-2 text-compact italic leading-relaxed text-muted-foreground">No description available</p>
+                <div class="mt-auto flex flex-wrap items-center gap-1.5"><span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-2xs font-medium capitalize text-muted-foreground">Coaches</span></div>
+              </div>
+            </button>
+
+            <button onclick="openCommunity('spiritual')" class="animate-coach-fade-up group relative flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <div class="relative h-28 w-full overflow-hidden bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40">
+                <div class="absolute bottom-2.5 left-2.5 flex w-fit max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-xl bg-black/30 px-2.5 py-1.5 backdrop-blur-md">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white">SP</div>
+                  <span class="truncate text-xs font-semibold text-white">Spiritual Growth</span>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-2.5 p-4">
+                <div class="flex items-center gap-2 text-2xs text-muted-foreground"><span>523 members</span><span class="h-[3px] w-[3px] shrink-0 rounded-full bg-border"></span><span>98 posts</span></div>
+                <p class="line-clamp-2 text-compact leading-relaxed text-muted-foreground">Daily reflections, guided meditations and a supportive circle for spiritual seekers.</p>
+                <div class="mt-auto flex flex-wrap items-center gap-1.5"><span class="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-2xs font-medium capitalize text-muted-foreground">Spiritual</span></div>
+              </div>
+            </button>
+
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- ══════════════════════════════════ DASHBOARD SCREEN ══════════════════════════════════ -->
+    <section id="screen-dashboard" class="proto-screen hidden-screen flex h-screen w-full overflow-hidden bg-background">
+
+      <aside class="flex w-[230px] flex-shrink-0 flex-col justify-between bg-sidebar px-3 py-4">
+        <div>
+          <div class="mb-6 flex items-center gap-2 px-2">
+            <i data-lucide="circle-dot" class="h-5 w-5 text-primary"></i>
+            <span class="text-lg font-bold text-foreground">nomei</span>
+          </div>
+          <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="home" class="h-4 w-4"></i>Home</a>
+          </nav>
+          <div class="mt-5 mb-2 px-2.5 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Features</div>
+          <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="message-circle" class="h-4 w-4 text-indigo"></i>Companion</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="graduation-cap" class="h-4 w-4 text-blue"></i>Coaching</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="clipboard-list" class="h-4 w-4 text-orange"></i>Plans</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="activity" class="h-4 w-4 text-violet"></i>Audio Tracks</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="target" class="h-4 w-4 text-red"></i>Reflections</a>
+            <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"><i data-lucide="image" class="h-4 w-4 text-green"></i>Vision Board</a>
+          </nav>
+          <div class="mt-5 mb-2 px-2.5 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Explore</div>
+          <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-2.5 rounded-lg bg-accent/50 px-2.5 py-2 text-[13.5px] font-semibold text-accent-foreground"><i data-lucide="megaphone" class="h-4 w-4 text-yellow"></i>Communities</a>
+          </nav>
+        </div>
+        <div class="flex flex-col gap-3 border-t border-sidebar-border pt-3">
+          <div class="flex items-center justify-between px-1">
+            <span class="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"><i data-lucide="coins" class="h-3.5 w-3.5 text-yellow"></i>90489.16 credits</span>
+            <span class="relative"><i data-lucide="bell" class="h-4 w-4 text-muted-foreground"></i><span class="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-purple text-[9px] font-bold text-white">1</span></span>
+          </div>
+          <div class="flex items-center gap-2 rounded-lg px-1 py-1">
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white" style="background:#3dbd8e">K</div>
+            <span class="flex-1 truncate text-sm font-medium text-foreground">Kate</span>
+            <span class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Basic</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="flex min-w-0 flex-1 flex-col overflow-hidden bg-background">
+        <div class="flex items-center justify-between px-10 pt-4">
+          <button onclick="jumpTo('discover')" class="text-muted-foreground flex cursor-pointer items-center gap-2 rounded-full border border-border px-2.5 py-1.5 text-sm font-medium hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i><span>Back to communities</span>
+          </button>
+        </div>
+
+        <div class="flex min-h-0 flex-1 gap-6 overflow-hidden px-10 pt-6">
+
+          <!-- Community sidebar -->
+          <div class="flex w-[20rem] flex-shrink-0 flex-col gap-5 pr-8">
+            <div class="relative h-36 w-full flex-shrink-0 overflow-hidden rounded-2xl">
+              <img id="dash-banner-img" src="images.jpeg" alt="" class="h-full w-full object-cover" />
+              <div id="dash-banner-fallback" class="hidden-screen h-full w-full bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40"></div>
+              <div class="absolute right-2.5 top-2.5 flex cursor-pointer items-center justify-center rounded-lg bg-black/30 p-1.5 text-white backdrop-blur-md">
+                <i data-lucide="more-vertical" class="h-[15px] w-[15px]"></i>
+              </div>
+              <div class="absolute right-3 bottom-3 left-3 flex items-center gap-2.5 rounded-xl bg-black/30 px-3 py-2 backdrop-blur-md">
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white"><span id="dash-banner-initials-text">EP</span></div>
+                <span id="dash-banner-name" class="truncate text-sm font-semibold text-white">Everyday Positivity</span>
+              </div>
+            </div>
+
+            <nav class="flex flex-col gap-6 overflow-y-auto">
+              <div class="flex flex-col gap-1">
+                <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Community</div>
+                <button id="dash-nav-settings" onclick="showDashView('settings')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="settings" class="h-4 w-4"></i>Settings</button>
+                <button id="dash-nav-feed" onclick="showDashView('feed')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-semibold text-accent-foreground bg-accent/50"><i data-lucide="flag" class="h-4 w-4"></i>General</button>
+                <button id="dash-nav-members" onclick="showDashView('members')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="users" class="h-4 w-4"></i>Members</button>
+                <button id="dash-nav-marketplace" onclick="showDashView('marketplace')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="shopping-bag" class="h-4 w-4"></i>Marketplace</button>
+                <button id="dash-nav-marketplace-buyer" onclick="showDashView('marketplace-buyer')" class="hidden-screen flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="shopping-bag" class="h-4 w-4"></i>Marketplace</button>
+                <button id="dash-nav-moderation" onclick="showDashView('moderation')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="shield-alert" class="h-4 w-4"></i>Moderation</button>
+                <button id="dash-nav-safeguard" onclick="showDashView('safeguard')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="shield-check" class="h-4 w-4"></i>Safeguard</button>
+                <button id="dash-nav-statistics" onclick="showDashView('statistics')" class="flex items-center gap-2.5 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><i data-lucide="pie-chart" class="h-4 w-4"></i>Statistics</button>
+              </div>
+
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between px-0 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground"><span>Text Channels</span><i data-lucide="chevron-down" class="h-3.5 w-3.5"></i></div>
+                <div class="flex flex-col gap-1">
+                  <button class="flex items-center gap-2 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-primary hover:bg-accent/30"><i data-lucide="plus" class="h-3.5 w-3.5"></i>Create a channel</button>
+                  <button id="dash-nav-channel-general" onclick="openChannel('general')" class="flex items-center justify-between rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><span># general</span></button>
+                  <button id="dash-nav-channel-feedback" onclick="openChannel('feedback')" class="flex items-center justify-between rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-muted-foreground hover:bg-accent/30"><span># feedback</span></button>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between px-0 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground"><span>Chat</span><i data-lucide="chevron-down" class="h-3.5 w-3.5"></i></div>
+                <div class="flex flex-col gap-1">
+                  <button class="flex items-center gap-2 rounded-[8px] px-3 py-[0.5625rem] text-left text-[13.5px] font-medium text-primary hover:bg-accent/30"><i data-lucide="plus" class="h-3.5 w-3.5"></i>New</button>
+                </div>
+              </div>
+            </nav>
+          </div>
+
+          <!-- Main panel: swaps between Feed / Channel / Members / Settings -->
+          <div class="flex min-h-0 flex-1 flex-col overflow-hidden border-l border-border pl-10">
+
+            <!-- Feed view -->
+            <div id="dash-view-feed" class="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="mx-auto flex w-full max-w-3xl flex-col gap-4 py-6">
+                <div class="flex shrink-0 items-start justify-between">
+                  <div>
+                    <h2 class="text-h1 text-foreground">Feed</h2>
+                    <p id="dash-feed-subtitle" class="text-c1 text-muted-foreground">1 member</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-3 rounded-[var(--radius)] border border-border bg-card p-5 shadow-[var(--shadow)]">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white" style="background:#3dbd8e">K</div>
+                    <span class="text-base font-semibold text-foreground">Kate Cocker</span>
+                  </div>
+                  <textarea id="dash-composer-input" oninput="updateComposer()" rows="2" placeholder="Write your thoughts here..." class="w-full resize-none rounded-2xl border border-foreground/22 bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-klein-500 focus:outline-none focus:ring-0"></textarea>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3 text-muted-foreground">
+                      <i data-lucide="paperclip" class="h-4 w-4"></i>
+                      <i data-lucide="plus" class="h-4 w-4"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <button onclick="clearComposer()" class="text-sm font-medium text-muted-foreground hover:text-foreground">Cancel</button>
+                      <button id="dash-composer-post" disabled class="cursor-not-allowed rounded-3xl bg-muted px-[1.375rem] py-2.5 text-compact font-semibold text-muted-foreground">Post</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="dash-posts-list" class="hidden-screen flex flex-col gap-4">
+                  <div class="overflow-hidden rounded-[var(--radius)] border border-border bg-card p-6 shadow-[var(--shadow)]">
+                    <div class="flex items-start gap-4">
+                      <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-base font-semibold text-white" style="background:#2a8bbf">JS</div>
+                      <div class="min-w-0 flex-1">
+                        <div class="mb-2 flex items-center justify-between">
+                          <h3 class="text-foreground text-lg font-semibold">Jane Smith</h3>
+                          <div class="flex flex-shrink-0 items-center gap-2"><span class="text-xs text-muted-foreground">2h ago</span><i data-lucide="more-vertical" class="h-4 w-4 text-muted-foreground"></i></div>
+                        </div>
+                        <p class="text-foreground text-c1 mb-3 leading-relaxed">Just wrapped up a great session on managing burnout with clients. Sharing my notes and a worksheet in the resources channel. Let me know if it helps!</p>
+                        <div class="mb-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <button class="flex h-9 items-center gap-1 rounded-full border border-border bg-card px-2.5 text-foreground/70 hover:bg-muted"><span class="text-base">👍</span><span class="text-sm font-medium">12</span></button>
+                          <button class="flex h-9 items-center gap-1 rounded-full border border-border bg-card px-2.5 text-foreground/70 hover:bg-muted"><span class="text-base">❤️</span><span class="text-sm font-medium">4</span></button>
+                          <span class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground"><i data-lucide="plus" class="h-3.5 w-3.5"></i></span>
+                        </div>
+                        <div class="flex gap-6 text-sm"><button class="flex items-center gap-1.5 text-muted-foreground hover:text-foreground"><span class="font-medium">6</span><span>Comments</span></button></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="overflow-hidden rounded-[var(--radius)] border border-border bg-card p-6 shadow-[var(--shadow)]">
+                    <div class="flex items-start gap-4">
+                      <img src="https://i.pravatar.cc/56?img=8" alt="Robert Lee" class="h-12 w-12 flex-shrink-0 rounded-full object-cover" />
+                      <div class="min-w-0 flex-1">
+                        <div class="mb-2 flex items-center justify-between">
+                          <h3 class="text-foreground text-lg font-semibold">Robert Lee</h3>
+                          <div class="flex flex-shrink-0 items-center gap-2"><span class="text-xs text-muted-foreground">Yesterday</span><i data-lucide="more-vertical" class="h-4 w-4 text-muted-foreground"></i></div>
+                        </div>
+                        <p class="text-foreground text-c1 mb-3 leading-relaxed">Reminder: our monthly peer supervision call is this Friday at 4pm. Drop your cases in the thread if you'd like feedback beforehand.</p>
+                        <div class="mb-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <button class="flex h-9 items-center gap-1 rounded-full border border-border bg-card px-2.5 text-foreground/70 hover:bg-muted"><span class="text-base">🙌</span><span class="text-sm font-medium">3</span></button>
+                          <span class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground"><i data-lucide="plus" class="h-3.5 w-3.5"></i></span>
+                        </div>
+                        <div class="flex gap-6 text-sm"><button class="flex items-center gap-1.5 text-muted-foreground hover:text-foreground"><span class="font-medium">1</span><span>Comments</span></button></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="dash-empty-state" class="flex flex-col items-center justify-center gap-4 py-16 text-center">
+                  <div class="flex h-14 w-14 items-center justify-center rounded-full bg-muted"><span class="h-[10px] w-[10px] rounded-full bg-yellow"></span></div>
+                  <div class="flex flex-col items-center gap-1">
+                    <p class="text-base font-semibold text-foreground">No posts yet</p>
+                    <p class="text-compact text-muted-foreground">Be the first to share something with the community!</p>
+                  </div>
+                  <button onclick="focusComposer()" class="cursor-pointer rounded-3xl bg-foreground px-[1.375rem] py-2.5 text-compact font-semibold text-background">Create first post</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Channel view -->
+            <div id="dash-view-channel" class="hidden-screen flex flex-1 flex-col overflow-hidden">
+              <div class="flex shrink-0 items-baseline gap-2 border-b border-border py-6">
+                <span id="channel-title" class="text-lg font-bold text-foreground">#general</span>
+                <span id="channel-subtitle" class="text-sm text-muted-foreground">General channel</span>
+              </div>
+              <div class="flex flex-1 flex-col items-center justify-center gap-1 text-center">
+                <p id="channel-welcome" class="text-sm font-bold uppercase tracking-wide text-foreground">Welcome to #general</p>
+                <p id="channel-welcome-sub" class="text-sm text-muted-foreground">This is the start of the #general channel.</p>
+              </div>
+              <div class="mx-auto mb-2 flex w-full max-w-3xl shrink-0 items-center gap-3 rounded-[var(--radius)] border border-border bg-card px-4 py-3 shadow-[var(--shadow)]">
+                <span id="channel-input" class="flex-1 text-sm text-muted-foreground">Message #general</span>
+                <div class="flex flex-shrink-0 items-center gap-3 text-muted-foreground">
+                  <span class="text-sm font-bold">B</span>
+                  <i data-lucide="italic" class="h-4 w-4"></i>
+                  <i data-lucide="list" class="h-4 w-4"></i>
+                  <i data-lucide="smile" class="h-4 w-4"></i>
+                  <i data-lucide="paperclip" class="h-4 w-4"></i>
+                </div>
+                <button disabled class="flex flex-shrink-0 cursor-not-allowed items-center gap-1.5 rounded-3xl bg-accent/50 px-4 py-2 text-xs font-semibold text-muted-foreground"><i data-lucide="send" class="h-3.5 w-3.5"></i><span id="channel-send-label">Send</span></button>
+              </div>
+            </div>
+
+            <!-- Members view -->
+            <div id="dash-view-members" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col gap-5 py-6">
+                <div>
+                  <h2 class="text-h1 text-foreground">Members</h2>
+                  <p class="text-c1 text-muted-foreground">Manage your community members and their roles.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <button class="flex items-center gap-2 rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground"><i data-lucide="user-plus" class="h-4 w-4"></i>View Requests</button>
+                    <button class="flex items-center gap-2 rounded-3xl bg-foreground px-[1.375rem] py-2.5 text-compact font-semibold text-background"><i data-lucide="copy" class="h-4 w-4"></i>Copy invite link</button>
+                    <button class="flex items-center gap-2 rounded-3xl border border-border bg-card px-[1.375rem] py-2.5 text-compact font-semibold text-foreground"><i data-lucide="mail" class="h-4 w-4"></i>Send invites</button>
+                  </div>
+                  <div class="relative flex h-[2.75rem] w-[240px] items-center rounded-xl border-[1.5px] border-border bg-card">
+                    <i data-lucide="search" class="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-foreground opacity-45"></i>
+                    <input placeholder="Search members..." class="h-full w-full rounded-xl border-none bg-transparent py-0 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0" />
+                  </div>
+                </div>
+
+                <p class="text-compact text-muted-foreground">1 member</p>
+
+                <div class="overflow-hidden rounded-xl border border-border">
+                  <table class="w-full text-left text-sm">
+                    <thead>
+                      <tr class="border-b border-border">
+                        <th class="w-10 px-4 py-3"><input type="checkbox" class="rounded border-border" /></th>
+                        <th class="px-2 py-3 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Name</th>
+                        <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Role</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="px-4 py-3"><input type="checkbox" class="rounded border-border" /></td>
+                        <td class="px-2 py-3">
+                          <div class="flex items-center gap-3">
+                            <div class="flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold text-white" style="background:#c2914a">KC</div>
+                            <div>
+                              <div class="flex items-center gap-1.5"><span class="font-medium text-foreground">Kate Cocker</span><span class="h-2 w-2 rounded-full bg-emerald-500"></span></div>
+                              <p class="text-2xs text-muted-foreground">Online</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3"><span class="rounded-full bg-yellow/15 px-3 py-1 text-xs font-semibold text-yellow">Owner</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Settings view -->
+            <div id="dash-view-settings" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col py-6">
+                <div class="mb-4">
+                  <h2 class="text-h1 text-foreground">Settings</h2>
+                  <p class="text-c1 text-muted-foreground">Configure how your community is displayed.</p>
+                </div>
+
+                <div class="grid grid-cols-[220px_1fr] gap-8 border-b border-border py-6">
+                  <div>
+                    <p class="text-sm font-semibold text-foreground">Name</p>
+                    <p class="mt-1 text-c2 text-muted-foreground">Configure how your community name is shown.</p>
+                  </div>
+                  <input value="Everyday Positivity" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground focus:border-klein-500 focus:outline-none focus:ring-0" />
+                </div>
+
+                <div class="grid grid-cols-[220px_1fr] gap-8 border-b border-border py-6">
+                  <div>
+                    <p class="text-sm font-semibold text-foreground">Description</p>
+                    <p class="mt-1 text-c2 text-muted-foreground">This will be displayed on your profile.</p>
+                  </div>
+                  <div>
+                    <textarea rows="3" class="min-h-[6.5rem] w-full resize-none rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground focus:border-klein-500 focus:outline-none focus:ring-0">Daily gratitude prompts, small wins and mindful living, curated by wellness coach Kate Cocker.</textarea>
+                    <p class="mt-1 text-right text-c2 text-muted-foreground">275 characters left</p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-[220px_1fr] gap-8 border-b border-border py-6">
+                  <div>
+                    <p class="text-sm font-semibold text-foreground">Sector</p>
+                    <p class="mt-1 text-c2 text-muted-foreground">Help to optimise the visibility of your community.</p>
+                  </div>
+                  <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-2">
+                      <div class="relative flex h-[3.375rem] flex-1 items-center justify-between rounded-2xl border border-foreground/22 bg-card px-4">
+                        <span class="text-sm text-muted-foreground">Search or add a sector...</span>
+                        <i data-lucide="chevron-down" class="h-4 w-4 text-muted-foreground"></i>
+                      </div>
+                      <button disabled class="cursor-not-allowed rounded-3xl bg-muted px-[1.375rem] py-2.5 text-compact font-semibold text-muted-foreground">Add</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground">self-improvement<i data-lucide="x" class="h-3 w-3 cursor-pointer"></i></span>
+                      <span class="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground">wellness<i data-lucide="x" class="h-3 w-3 cursor-pointer"></i></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-[220px_1fr] gap-8 border-b border-border py-6">
+                  <div>
+                    <p class="text-sm font-semibold text-foreground">Preview</p>
+                    <p class="mt-1 text-c2 text-muted-foreground">Update your community logo and banner.</p>
+                  </div>
+                  <div class="flex flex-col items-center gap-2">
+                    <div class="relative h-40 w-full max-w-lg overflow-hidden rounded-2xl bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40">
+                      <img src="images.jpeg" alt="" class="absolute inset-0 h-full w-full object-cover" />
+                      <div class="absolute bottom-3 left-3 flex items-center gap-2 rounded-xl bg-black/30 px-3 py-2 backdrop-blur-md">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white">EP</div>
+                        <span class="text-sm font-semibold text-white">Everyday Positivity</span>
+                      </div>
+                    </div>
+                    <p class="text-c2 text-muted-foreground">JPEG, PNG, WebP, GIF &middot; Max 5MB</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-6">
+                  <div>
+                    <p class="text-sm font-semibold text-destructive">Delete community</p>
+                    <p class="mt-1 text-c2 text-muted-foreground">Permanently delete this community and all its data.</p>
+                  </div>
+                  <button class="flex flex-shrink-0 cursor-pointer items-center gap-2 rounded-3xl bg-destructive px-[1.375rem] py-2.5 text-compact font-semibold text-white"><i data-lucide="trash-2" class="h-4 w-4"></i>Delete Community</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Marketplace view -->
+            <div id="dash-view-marketplace" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col gap-5 py-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h2 class="text-h1 text-foreground">Marketplace</h2>
+                    <p class="text-c1 text-muted-foreground">Personalised audios, coaching sessions and plans by Kate Cocker.</p>
+                  </div>
+                  <button onclick="openListingWizard('create')" class="flex-shrink-0 cursor-pointer rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground">New listing</button>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-primary bg-accent px-3.5 py-1.5 text-xs font-semibold text-accent-foreground">All</button>
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground">Audio</button>
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground">Coaching</button>
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground">Plans</button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+                  <div onclick="openListingPreview(this)" class="listing-card group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="Calm Morning Audio Pack" data-price="4" data-desc="5 short guided audios to ease into your morning.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-calm-morning/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Audio</span>
+                      <div class="listing-menu-wrapper absolute right-2.5 top-2.5">
+                        <button onclick="toggleListingMenu(event, this)" class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-black/30 text-white backdrop-blur-md hover:bg-black/50"><i data-lucide="more-vertical" class="h-4 w-4"></i></button>
+                        <div class="listing-menu hidden-screen absolute right-0 z-20 mt-2 w-36 rounded-lg bg-popover shadow-lg">
+                          <div class="py-1">
+                            <button onclick="event.stopPropagation(); editListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-foreground/10"><i data-lucide="pencil" class="h-3.5 w-3.5"></i>Edit</button>
+                            <button onclick="event.stopPropagation(); confirmDeleteListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-foreground/10"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="listing-title text-sm font-semibold text-foreground">Calm Morning Audio Pack</p>
+                      <p class="listing-desc text-c2 text-muted-foreground">5 short guided audios to ease into your morning.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="listing-price text-sm font-semibold text-foreground">&pound;4</span>
+                        <span class="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-semibold text-primary">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="listing-card group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="Interview Confidence Coach" data-price="20" data-desc="Chat anytime with an AI coach to steady your nerves before an interview.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-interview-coach/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Coaching</span>
+                      <div class="listing-menu-wrapper absolute right-2.5 top-2.5">
+                        <button onclick="toggleListingMenu(event, this)" class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-black/30 text-white backdrop-blur-md hover:bg-black/50"><i data-lucide="more-vertical" class="h-4 w-4"></i></button>
+                        <div class="listing-menu hidden-screen absolute right-0 z-20 mt-2 w-36 rounded-lg bg-popover shadow-lg">
+                          <div class="py-1">
+                            <button onclick="event.stopPropagation(); editListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-foreground/10"><i data-lucide="pencil" class="h-3.5 w-3.5"></i>Edit</button>
+                            <button onclick="event.stopPropagation(); confirmDeleteListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-foreground/10"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="listing-title text-sm font-semibold text-foreground">Interview Confidence Coach</p>
+                      <p class="listing-desc text-c2 text-muted-foreground">Chat anytime with an AI coach to steady your nerves before an interview.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="listing-price text-sm font-semibold text-foreground">&pound;20</span>
+                        <span class="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-semibold text-primary">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="listing-card group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="8-Week Return to Work Plan" data-price="12" data-desc="An 8-week plan to feel steady again, one small win at a time.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-return-work/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Plan</span>
+                      <div class="listing-menu-wrapper absolute right-2.5 top-2.5">
+                        <button onclick="toggleListingMenu(event, this)" class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-black/30 text-white backdrop-blur-md hover:bg-black/50"><i data-lucide="more-vertical" class="h-4 w-4"></i></button>
+                        <div class="listing-menu hidden-screen absolute right-0 z-20 mt-2 w-36 rounded-lg bg-popover shadow-lg">
+                          <div class="py-1">
+                            <button onclick="event.stopPropagation(); editListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-foreground/10"><i data-lucide="pencil" class="h-3.5 w-3.5"></i>Edit</button>
+                            <button onclick="event.stopPropagation(); confirmDeleteListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-foreground/10"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="listing-title text-sm font-semibold text-foreground">8-Week Return to Work Plan</p>
+                      <p class="listing-desc text-c2 text-muted-foreground">An 8-week plan to feel steady again, one small win at a time.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="listing-price text-sm font-semibold text-foreground">&pound;12</span>
+                        <span class="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-semibold text-primary">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="listing-card group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="Bedtime Wind-Down Audios" data-price="3" data-desc="Gentle audios to quiet an anxious mind at bedtime.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-bedtime/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Audio</span>
+                      <div class="listing-menu-wrapper absolute right-2.5 top-2.5">
+                        <button onclick="toggleListingMenu(event, this)" class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-black/30 text-white backdrop-blur-md hover:bg-black/50"><i data-lucide="more-vertical" class="h-4 w-4"></i></button>
+                        <div class="listing-menu hidden-screen absolute right-0 z-20 mt-2 w-36 rounded-lg bg-popover shadow-lg">
+                          <div class="py-1">
+                            <button onclick="event.stopPropagation(); editListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-foreground/10"><i data-lucide="pencil" class="h-3.5 w-3.5"></i>Edit</button>
+                            <button onclick="event.stopPropagation(); confirmDeleteListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-foreground/10"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="listing-title text-sm font-semibold text-foreground">Bedtime Wind-Down Audios</p>
+                      <p class="listing-desc text-c2 text-muted-foreground">Gentle audios to quiet an anxious mind at bedtime.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="listing-price text-sm font-semibold text-foreground">&pound;3</span>
+                        <span class="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-semibold text-primary">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="listing-card group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="After a &quot;No&quot;: Recovery Audios" data-price="3" data-desc="Short audios to help you reset after a rejection.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-recovery/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Audio</span>
+                      <div class="listing-menu-wrapper absolute right-2.5 top-2.5">
+                        <button onclick="toggleListingMenu(event, this)" class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-black/30 text-white backdrop-blur-md hover:bg-black/50"><i data-lucide="more-vertical" class="h-4 w-4"></i></button>
+                        <div class="listing-menu hidden-screen absolute right-0 z-20 mt-2 w-36 rounded-lg bg-popover shadow-lg">
+                          <div class="py-1">
+                            <button onclick="event.stopPropagation(); editListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-foreground/10"><i data-lucide="pencil" class="h-3.5 w-3.5"></i>Edit</button>
+                            <button onclick="event.stopPropagation(); confirmDeleteListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-foreground/10"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="listing-title text-sm font-semibold text-foreground">After a "No": Recovery Audios</p>
+                      <p class="listing-desc text-c2 text-muted-foreground">Short audios to help you reset after a rejection.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="listing-price text-sm font-semibold text-foreground">&pound;3</span>
+                        <span class="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-semibold text-primary">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="listing-card group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="Own Your Story Coach" data-price="15" data-desc="Chat anytime with an AI coach to find the words for your CV and LinkedIn.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-own-story/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Coaching</span>
+                      <div class="listing-menu-wrapper absolute right-2.5 top-2.5">
+                        <button onclick="toggleListingMenu(event, this)" class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-black/30 text-white backdrop-blur-md hover:bg-black/50"><i data-lucide="more-vertical" class="h-4 w-4"></i></button>
+                        <div class="listing-menu hidden-screen absolute right-0 z-20 mt-2 w-36 rounded-lg bg-popover shadow-lg">
+                          <div class="py-1">
+                            <button onclick="event.stopPropagation(); editListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-foreground/10"><i data-lucide="pencil" class="h-3.5 w-3.5"></i>Edit</button>
+                            <button onclick="event.stopPropagation(); confirmDeleteListing(this)" class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-foreground/10"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i>Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="listing-title text-sm font-semibold text-foreground">Own Your Story Coach</p>
+                      <p class="listing-desc text-c2 text-muted-foreground">Chat anytime with an AI coach to find the words for your CV and LinkedIn.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="listing-price text-sm font-semibold text-foreground">&pound;15</span>
+                        <span class="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-semibold text-primary">Active</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Listing wizard modal (New listing / Edit) -->
+            <div id="listing-wizard-overlay" class="hidden-screen fixed inset-0 z-[200] flex items-center justify-center bg-black/30 p-4">
+              <div class="w-full max-w-2xl rounded-2xl bg-card p-8 shadow-lg">
+                <div class="mb-5 flex items-center justify-between">
+                  <h3 id="wizard-title" class="text-h3 text-foreground">New listing</h3>
+                  <button onclick="closeListingWizard()" class="cursor-pointer text-muted-foreground hover:text-foreground"><i data-lucide="x" class="h-5 w-5"></i></button>
+                </div>
+
+                <div class="mb-5 flex items-center gap-2 text-xs font-semibold">
+                  <span id="wizard-dot-1" class="rounded-full bg-accent px-3 py-1 text-accent-foreground">1. Select content</span>
+                  <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-border"></i>
+                  <span id="wizard-dot-2" class="rounded-full bg-muted px-3 py-1 text-muted-foreground">2. Details</span>
+                  <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-border"></i>
+                  <span id="wizard-dot-3" class="rounded-full bg-muted px-3 py-1 text-muted-foreground">3. Confirm</span>
+                </div>
+
+                <!-- Step 1: select artifact -->
+                <div id="wizard-step-1">
+                  <p class="mb-3 text-c1 text-muted-foreground">Choose a file from your library to sell in the Marketplace.</p>
+                  <div class="flex max-h-64 flex-col gap-2 overflow-y-auto">
+                    <button onclick="selectArtifact(this,'Morning Gratitude Journal Prompts','Audio')" data-selected="false" class="artifact-option flex w-full items-center justify-between rounded-xl border border-border px-3 py-2.5 text-left hover:bg-muted/50">
+                      <span class="flex items-center gap-2 text-sm font-medium text-foreground"><i data-lucide="audio-lines" class="h-4 w-4 text-primary"></i>Morning Gratitude Journal Prompts</span>
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-muted-foreground">Audio</span>
+                    </button>
+                    <button onclick="selectArtifact(this,'Confidence Reset Meditation','Audio')" data-selected="false" class="artifact-option flex w-full items-center justify-between rounded-xl border border-border px-3 py-2.5 text-left hover:bg-muted/50">
+                      <span class="flex items-center gap-2 text-sm font-medium text-foreground"><i data-lucide="audio-lines" class="h-4 w-4 text-primary"></i>Confidence Reset Meditation</span>
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-muted-foreground">Audio</span>
+                    </button>
+                    <button onclick="selectArtifact(this,'1:1 Clarity Coaching Session','Coaching')" data-selected="false" class="artifact-option flex w-full items-center justify-between rounded-xl border border-border px-3 py-2.5 text-left hover:bg-muted/50">
+                      <span class="flex items-center gap-2 text-sm font-medium text-foreground"><i data-lucide="message-circle" class="h-4 w-4 text-blue"></i>1:1 Clarity Coaching Session</span>
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-muted-foreground">Coaching</span>
+                    </button>
+                    <button onclick="selectArtifact(this,'30-Day Positivity Reset Plan','Plan')" data-selected="false" class="artifact-option flex w-full items-center justify-between rounded-xl border border-border px-3 py-2.5 text-left hover:bg-muted/50">
+                      <span class="flex items-center gap-2 text-sm font-medium text-foreground"><i data-lucide="clipboard-list" class="h-4 w-4 text-orange"></i>30-Day Positivity Reset Plan</span>
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-muted-foreground">Plan</span>
+                    </button>
+                  </div>
+                  <div class="mt-5 flex justify-end">
+                    <button id="wizard-next-1" onclick="goToWizardStep(2)" disabled class="cursor-not-allowed rounded-3xl bg-accent/50 px-[1.375rem] py-2.5 text-compact font-semibold text-muted-foreground">Continue</button>
+                  </div>
+                </div>
+
+                <!-- Step 2: price + description -->
+                <div id="wizard-step-2" class="hidden-screen">
+                  <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-2">
+                      <label class="text-foreground text-c1 font-semibold">Title</label>
+                      <input id="wizard-title-input" type="text" maxlength="80" placeholder="Listing title" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground focus:border-klein-500 focus:outline-none focus:ring-0" />
+                      <p class="text-c2 text-muted-foreground">This is the name buyers will see in the Marketplace. Change it if you'd like a different commercial name.</p>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <label class="text-foreground text-c1 font-semibold">Price</label>
+                      <div class="relative">
+                        <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-foreground">&pound;</span>
+                        <input id="wizard-price-input" type="number" min="0" placeholder="0" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card py-3 pl-8 pr-4 text-foreground focus:border-klein-500 focus:outline-none focus:ring-0" />
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <label class="text-foreground text-c1 font-semibold">Cover image</label>
+                      <div id="wizard-cover-dropzone" onclick="document.getElementById('wizard-cover-input').click()" class="relative flex h-36 cursor-pointer flex-col items-center justify-center gap-1.5 overflow-hidden rounded-2xl border-2 border-dashed border-border text-center text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/5">
+                        <img id="wizard-cover-preview" class="hidden-screen absolute inset-0 h-full w-full object-cover" alt="" />
+                        <i data-lucide="image-plus" class="wizard-cover-placeholder h-6 w-6"></i>
+                        <span class="wizard-cover-placeholder text-sm font-medium">Click to upload or drag and drop</span>
+                        <span class="wizard-cover-placeholder text-2xs">Recommended 3:2, JPEG or PNG. Max 5MB</span>
+                        <button type="button" onclick="removeCoverImage(event)" id="wizard-cover-remove" class="hidden-screen absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg bg-black/40 text-white backdrop-blur-md hover:bg-black/60"><i data-lucide="x" class="h-4 w-4"></i></button>
+                      </div>
+                      <input id="wizard-cover-input" type="file" accept="image/*" class="hidden" onchange="handleCoverImageSelect(event)" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                      <label class="text-foreground text-c1 font-semibold">Description</label>
+                      <textarea id="wizard-desc-input" rows="3" placeholder="Describe what buyers will get..." class="min-h-[6.5rem] w-full resize-none rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground focus:border-klein-500 focus:outline-none focus:ring-0"></textarea>
+                    </div>
+                  </div>
+                  <div class="mt-5 flex justify-between">
+                    <button onclick="goToWizardStep(1)" class="cursor-pointer rounded-3xl bg-surface px-[1.375rem] py-2.5 text-compact font-semibold text-secondary-foreground">Back</button>
+                    <button onclick="goToWizardStep(3)" class="cursor-pointer rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground">Continue</button>
+                  </div>
+                </div>
+
+                <!-- Step 3: confirm -->
+                <div id="wizard-step-3" class="hidden-screen">
+                  <div class="rounded-xl border border-border bg-muted/40 p-4">
+                    <p id="wizard-confirm-title" class="text-sm font-semibold text-foreground">Morning Gratitude Journal Prompts</p>
+                    <p id="wizard-confirm-desc" class="mt-1 text-c2 text-muted-foreground">Describe what buyers will get...</p>
+                    <p id="wizard-confirm-price" class="mt-2 text-sm font-semibold text-primary">&pound;0</p>
+                  </div>
+                  <p class="mt-3 text-c2 text-muted-foreground">This will be published to your community Marketplace.</p>
+                  <div class="mt-5 flex justify-between">
+                    <button onclick="goToWizardStep(2)" class="cursor-pointer rounded-3xl bg-surface px-[1.375rem] py-2.5 text-compact font-semibold text-secondary-foreground">Back</button>
+                    <button id="wizard-publish-btn" onclick="publishListing()" class="cursor-pointer rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground">Publish listing</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Delete listing confirm modal -->
+            <div id="delete-listing-overlay" class="hidden-screen fixed inset-0 z-[200] flex items-center justify-center bg-black/30 p-4">
+              <div class="w-full max-w-sm rounded-2xl bg-card p-6 shadow-lg">
+                <h3 class="text-h3 text-foreground">Delete this listing?</h3>
+                <p class="mt-2 text-c1 text-muted-foreground">This will remove it from your Marketplace permanently. This can't be undone.</p>
+                <div class="mt-6 flex justify-end gap-3">
+                  <button onclick="closeDeleteListingModal()" class="cursor-pointer rounded-3xl bg-secondary px-[1.375rem] py-2.5 text-compact font-semibold text-secondary-foreground">Cancel</button>
+                  <button onclick="deleteListingConfirmed()" class="cursor-pointer rounded-3xl bg-destructive px-[1.375rem] py-2.5 text-compact font-semibold text-white">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listing preview modal -->
+            <div id="listing-preview-overlay" class="hidden-screen fixed inset-0 z-[200] flex items-center justify-center bg-black/30 p-4">
+              <div class="relative w-full max-w-md overflow-hidden rounded-2xl bg-card shadow-lg">
+                <div class="relative h-40 w-full overflow-hidden">
+                  <img id="preview-banner-img" src="" alt="" class="h-full w-full object-cover" />
+                  <span id="preview-category-badge" class="absolute left-3 top-3 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Audio</span>
+                  <button onclick="closeListingPreview()" class="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white text-foreground shadow"><i data-lucide="x" class="h-4 w-4"></i></button>
+                </div>
+                <div class="scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex max-h-[60vh] flex-col gap-4 overflow-y-auto p-6">
+                  <div>
+                    <h3 id="preview-title" class="text-h3 text-foreground">Listing title</h3>
+                    <div class="mt-1 flex items-center gap-1.5">
+                      <span id="preview-author-avatar" class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[9px] font-semibold text-white">KC</span>
+                      <span id="preview-author-name" class="text-sm text-muted-foreground">Kate Cocker</span>
+                    </div>
+                  </div>
+                  <p id="listing-preview-desc" class="text-c1 text-foreground">Description</p>
+
+                  <div id="preview-audio-body" class="hidden-screen flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3">
+                    <button class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white"><i data-lucide="play" class="h-4 w-4"></i></button>
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-foreground">Preview clip</p>
+                      <p id="preview-audio-meta" class="text-c2 text-muted-foreground">0:15</p>
+                    </div>
+                    <i data-lucide="audio-lines" class="h-5 w-5 flex-shrink-0 text-muted-foreground"></i>
+                  </div>
+
+                  <div id="preview-coaching-body" class="hidden-screen flex flex-col gap-3">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">What this covers</p>
+                    <ul id="preview-coaching-list" class="flex flex-col gap-2"></ul>
+                    <div class="flex items-start gap-2 rounded-xl bg-accent/30 p-3 text-c2 text-foreground">
+                      <i data-lucide="zap" class="mt-0.5 h-4 w-4 flex-shrink-0 text-primary"></i>
+                      <span id="preview-coaching-note"></span>
+                    </div>
+                  </div>
+
+                  <div id="preview-plan-body" class="hidden-screen flex flex-col gap-3">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.8px] text-subtle-foreground">Milestones</p>
+                    <ul id="preview-plan-list" class="flex flex-col gap-3"></ul>
+                  </div>
+
+                  <div class="flex items-center justify-between border-t border-border pt-4">
+                    <span id="preview-price" class="text-h3 text-primary">&pound;0</span>
+                    <button onclick="openStripeCheckoutFromPreview()" class="cursor-pointer rounded-3xl bg-accent px-6 py-2.5 text-compact font-semibold text-accent-foreground">Buy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stripe-style checkout modal -->
+            <div id="stripe-checkout-overlay" class="hidden-screen fixed inset-0 z-[300] flex items-center justify-center bg-black/50 p-4">
+              <div class="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+                <div class="flex items-center justify-between border-b border-border px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="lock" class="h-4 w-4 text-muted-foreground"></i>
+                    <span class="text-sm font-medium text-foreground">Secure checkout</span>
+                  </div>
+                  <button onclick="closeStripeCheckout()" class="cursor-pointer text-muted-foreground hover:text-foreground"><i data-lucide="x" class="h-5 w-5"></i></button>
+                </div>
+                <div class="flex flex-col gap-5 p-6">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p id="stripe-item-title" class="text-sm font-semibold text-foreground">Item title</p>
+                      <p class="text-c2 text-muted-foreground">One-time purchase</p>
+                    </div>
+                    <p id="stripe-item-price" class="text-h3 text-foreground">&pound;0.00</p>
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <label class="text-c2 font-medium text-muted-foreground">Email</label>
+                    <input type="email" placeholder="kate@example.com" class="h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-foreground focus:border-primary focus:outline-none" />
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <label class="text-c2 font-medium text-muted-foreground">Card information</label>
+                    <div class="overflow-hidden rounded-lg border border-border">
+                      <div class="flex items-center gap-2 border-b border-border px-3 py-2.5">
+                        <i data-lucide="credit-card" class="h-4 w-4 flex-shrink-0 text-muted-foreground"></i>
+                        <input type="text" placeholder="1234 1234 1234 1234" class="flex-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
+                      </div>
+                      <div class="flex">
+                        <input type="text" placeholder="MM / YY" class="w-1/2 border-r border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
+                        <input type="text" placeholder="CVC" class="w-1/2 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <label class="text-c2 font-medium text-muted-foreground">Name on card</label>
+                    <input type="text" placeholder="Kate Cocker" class="h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-foreground focus:border-primary focus:outline-none" />
+                  </div>
+
+                  <button onclick="completeStripePayment()" class="flex h-12 w-full cursor-pointer items-center justify-center rounded-lg text-sm font-semibold text-white transition-colors" style="background:#635bff" onmouseover="this.style.background='#5851db'" onmouseout="this.style.background='#635bff'">Pay&nbsp;<span id="stripe-pay-amount">&pound;0.00</span></button>
+
+                  <div class="flex items-center justify-center gap-1 text-2xs text-muted-foreground">
+                    <span>Powered by</span>
+                    <span class="font-bold text-foreground">stripe</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Marketplace view (buyer / non-owner communities) -->
+            <div id="dash-view-marketplace-buyer" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col gap-5 py-6">
+                <div>
+                  <h2 class="text-h1 text-foreground">Marketplace</h2>
+                  <p class="text-c1 text-muted-foreground">Resources and sessions shared by this community.</p>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-primary bg-accent px-3.5 py-1.5 text-xs font-semibold text-accent-foreground">All</button>
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground">Audio</button>
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground">Coaching</button>
+                  <button class="cursor-pointer select-none whitespace-nowrap rounded-[1.25rem] border-[1.5px] border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground">Plans</button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+                  <div onclick="openListingPreview(this)" class="shop-card cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="Grounding Techniques Audio Guide" data-price="6" data-desc="Short audio exercises to help clients regulate during sessions.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-grounding/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Audio</span>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="text-sm font-semibold text-foreground">Grounding Techniques Audio Guide</p>
+                      <p class="text-c2 text-muted-foreground">Short audio exercises to help clients regulate during sessions.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="text-sm font-semibold text-foreground">&pound;6</span>
+                        <button onclick="event.stopPropagation(); openStripeCheckout(this.closest('.shop-card').dataset.title, this.closest('.shop-card').dataset.price)" class="cursor-pointer rounded-3xl bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground">Buy</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="shop-card cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="Client Intake Session Template" data-price="10" data-desc="A structured template for first sessions with new clients.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-intake/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Plan</span>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="text-sm font-semibold text-foreground">Client Intake Session Template</p>
+                      <p class="text-c2 text-muted-foreground">A structured template for first sessions with new clients.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="text-sm font-semibold text-foreground">&pound;10</span>
+                        <button onclick="event.stopPropagation(); openStripeCheckout(this.closest('.shop-card').dataset.title, this.closest('.shop-card').dataset.price)" class="cursor-pointer rounded-3xl bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground">Buy</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div onclick="openListingPreview(this)" class="shop-card cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm" data-title="1:1 Supervision Session" data-price="25" data-desc="A private supervision session with a senior therapist.">
+                    <div class="relative h-32 w-full overflow-hidden">
+                      <img src="https://picsum.photos/seed/nomei-supervision/400/220" alt="" class="h-full w-full object-cover" />
+                      <span class="absolute left-2.5 top-2.5 rounded-xl bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">Coaching</span>
+                    </div>
+                    <div class="flex flex-col gap-1 p-4">
+                      <p class="text-sm font-semibold text-foreground">1:1 Supervision Session</p>
+                      <p class="text-c2 text-muted-foreground">A private supervision session with a senior therapist.</p>
+                      <div class="mt-2 flex items-center justify-between">
+                        <span class="text-sm font-semibold text-foreground">&pound;25</span>
+                        <button onclick="event.stopPropagation(); openStripeCheckout(this.closest('.shop-card').dataset.title, this.closest('.shop-card').dataset.price)" class="cursor-pointer rounded-3xl bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground">Buy</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Moderation view -->
+            <div id="dash-view-moderation" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col gap-6 py-6">
+                <div>
+                  <h2 class="text-h1 text-foreground">Moderation</h2>
+                  <p class="text-c1 text-muted-foreground">Manage reports and banned users for this community.</p>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <h3 class="text-h3 text-foreground">Reports</h3>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold text-accent-foreground">All</span>
+                      <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Pending</span>
+                      <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Reviewing</span>
+                      <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Resolved</span>
+                      <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Dismissed</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-center rounded-xl border border-border bg-card py-12 text-sm text-muted-foreground">No reports found</div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                  <h3 class="text-h3 text-foreground">Banned Users</h3>
+                  <div class="flex items-center justify-center rounded-xl border border-border bg-card py-12 text-sm text-muted-foreground">No banned users</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Safeguard view -->
+            <div id="dash-view-safeguard" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col gap-5 py-6">
+                <div>
+                  <h2 class="text-h1 text-foreground">Safeguard</h2>
+                  <p class="text-c1 text-muted-foreground">Review safeguard alerts triggered in this community.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Flagged</span>
+                  <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Under review</span>
+                  <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Confirmed unsafe</span>
+                  <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">False positive</span>
+                  <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Resolved</span>
+                  <span class="rounded-full bg-muted px-3.5 py-1.5 text-xs font-medium text-muted-foreground">Appealed</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <span class="flex items-center gap-1 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground">All severities<i data-lucide="chevron-down" class="h-3.5 w-3.5"></i></span>
+                  <span class="flex items-center gap-1 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground">All categories<i data-lucide="chevron-down" class="h-3.5 w-3.5"></i></span>
+                </div>
+                <div class="flex items-center justify-center rounded-xl border border-border bg-card py-12 text-sm text-muted-foreground">No safeguard alerts found</div>
+              </div>
+            </div>
+
+            <!-- Statistics view -->
+            <div id="dash-view-statistics" class="hidden-screen scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent flex-1 overflow-y-auto">
+              <div class="flex w-full flex-col py-6">
+                <h2 class="text-h1 text-foreground">Statistics</h2>
+                <p class="mb-5 text-c1 text-muted-foreground">View engagement metrics for your community.</p>
+
+                <div class="rounded-2xl border border-border bg-card p-5">
+                  <div class="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-muted p-1">
+                    <button class="rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground">Last 24 hours</button>
+                    <button class="rounded-lg bg-card px-3 py-2 text-xs font-semibold text-foreground shadow-sm">Last 7 days</button>
+                    <button class="rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground">Last month</button>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="rounded-xl border border-border p-4">
+                      <div class="mb-3 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue/15 text-blue"><i data-lucide="users" class="h-4 w-4"></i></span>
+                        <span class="text-c2 text-muted-foreground">New Members</span>
+                      </div>
+                      <p class="mb-3 text-h2 text-foreground">0</p>
+                      <svg viewBox="0 0 200 30" class="h-8 w-full"><polyline points="0,28 200,28" fill="none" stroke="var(--color-blue)" stroke-width="2"/></svg>
+                      <div class="mt-1 flex justify-between text-2xs text-muted-foreground"><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span></div>
+                    </div>
+                    <div class="rounded-xl border border-border p-4">
+                      <div class="mb-3 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary"><i data-lucide="file-text" class="h-4 w-4"></i></span>
+                        <span class="text-c2 text-muted-foreground">New Posts</span>
+                      </div>
+                      <p class="mb-3 text-h2 text-foreground">0</p>
+                      <svg viewBox="0 0 200 30" class="h-8 w-full"><polyline points="0,28 200,28" fill="none" stroke="var(--primary)" stroke-width="2"/></svg>
+                      <div class="mt-1 flex justify-between text-2xs text-muted-foreground"><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span></div>
+                    </div>
+                    <div class="rounded-xl border border-border p-4">
+                      <div class="mb-3 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-orange/15 text-orange"><i data-lucide="message-square" class="h-4 w-4"></i></span>
+                        <span class="text-c2 text-muted-foreground">New Comments</span>
+                      </div>
+                      <p class="mb-3 text-h2 text-foreground">0</p>
+                      <svg viewBox="0 0 200 30" class="h-8 w-full"><polyline points="0,28 200,28" fill="none" stroke="var(--color-orange)" stroke-width="2"/></svg>
+                      <div class="mt-1 flex justify-between text-2xs text-muted-foreground"><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span></div>
+                    </div>
+                    <div class="rounded-xl border border-border p-4">
+                      <div class="mb-3 flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-red/15 text-red"><i data-lucide="heart" class="h-4 w-4"></i></span>
+                        <span class="text-c2 text-muted-foreground">Reactions</span>
+                      </div>
+                      <p class="mb-3 text-h2 text-foreground">0</p>
+                      <svg viewBox="0 0 200 30" class="h-8 w-full"><polyline points="0,28 200,28" fill="none" stroke="var(--color-red)" stroke-width="2"/></svg>
+                      <div class="mt-1 flex justify-between text-2xs text-muted-foreground"><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- ══════════════════════════════════ CREATE SCREEN ══════════════════════════════════ -->
+    <section id="screen-create" class="proto-screen hidden-screen flex h-screen w-full flex-col overflow-hidden bg-background">
+
+      <div class="flex h-[4.5rem] w-full flex-shrink-0 items-center justify-between border-b border-border px-10">
+        <button onclick="cancelCreate()" class="text-foreground flex items-center gap-2 rounded-full px-4 py-2 text-xl font-semibold">
+          <i data-lucide="arrow-left" class="h-5 w-5"></i><span>Back to communities</span>
+        </button>
+        <div class="flex items-center gap-2 text-xs font-semibold">
+          <span id="create-dot-form" class="rounded-full bg-accent px-3 py-1 text-accent-foreground">1. Create</span>
+          <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-border"></i>
+          <span id="create-dot-sector" class="rounded-full bg-muted px-3 py-1 text-muted-foreground">2. Sector</span>
+          <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-border"></i>
+          <span id="create-dot-invite" class="rounded-full bg-muted px-3 py-1 text-muted-foreground">3. Invite</span>
+        </div>
+      </div>
+
+      <div class="flex flex-1 flex-row items-center justify-center gap-10 overflow-y-auto px-8 py-8">
+
+        <!-- Step 1: Form -->
+        <div id="create-step-form" class="flex w-full flex-row items-center justify-center gap-10">
+          <div class="flex w-1/2 max-w-[40rem] flex-col border-r border-border pr-10">
+            <header class="flex flex-col gap-4">
+              <div>
+                <h1 class="text-h2 text-foreground">Let's create your community!</h1>
+                <p class="text-muted-foreground text-c1">Our users like to know more about a community before they get involved.</p>
+              </div>
+              <div class="mb-2 border-b border-border"></div>
+            </header>
+            <div class="flex flex-col gap-2">
+              <label class="text-foreground text-c1 font-semibold">Community's name</label>
+              <input id="create-name-input" oninput="updatePreview()" maxlength="120" placeholder="Enter community's name" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-klein-500 focus:outline-none focus:ring-0" />
+              <div class="flex items-start justify-between text-xs"><div class="ml-1 min-h-[1.2rem]"></div><span id="create-name-count" class="text-muted-foreground">0/120</span></div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="text-foreground text-c1 font-semibold">Description</label>
+              <textarea id="create-desc-input" oninput="updatePreview()" maxlength="500" placeholder="Enter community's description" rows="3" class="min-h-[6.5rem] max-h-[6.5rem] w-full resize-none rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-klein-500 focus:outline-none focus:ring-0"></textarea>
+              <div class="flex items-start justify-between"><div class="min-h-[1.2rem]"></div><span id="create-desc-count" class="text-muted-foreground text-c2">500 characters left</span></div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-foreground text-c1 font-semibold">Community logo</span>
+              <div class="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border px-6 py-6 text-center text-muted-foreground">
+                <i data-lucide="image-plus" class="h-6 w-6"></i><span class="text-sm font-medium">Click to upload or drag and drop</span><span class="text-2xs">Format: only jpeg, jpg, png, webp. Maximum size: 5MB</span>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-col gap-2">
+              <span class="text-foreground text-c1 font-semibold">Community banner</span>
+              <div class="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border px-6 py-6 text-center text-muted-foreground">
+                <i data-lucide="image-plus" class="h-6 w-6"></i><span class="text-sm font-medium">Click to upload or drag and drop</span><span class="text-2xs">Format: only jpeg, jpg. Maximum size: 5MB</span>
+              </div>
+            </div>
+            <footer class="mt-6 flex justify-end gap-3">
+              <button onclick="cancelCreate()" class="cursor-pointer rounded-3xl bg-surface px-[1.375rem] py-2.5 text-compact font-semibold text-secondary-foreground min-w-[8rem]">Cancel</button>
+              <button onclick="goToCreateStep('sector')" class="cursor-pointer rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground min-w-[8rem]">Continue</button>
+            </footer>
+          </div>
+
+          <div class="flex w-1/2 max-w-[28rem] items-center justify-center">
+            <div class="w-full max-w-sm rounded-xl border border-border bg-card shadow-sm">
+              <div class="relative h-28 w-full overflow-hidden rounded-t-xl bg-gradient-to-br from-yellow/25 via-yellow/10 to-accent/40">
+                <div class="absolute bottom-2.5 left-2.5 flex w-fit max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-xl bg-black/30 px-2.5 py-1.5 backdrop-blur-md">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white"><span id="preview-initials">CO</span></div>
+                  <span id="preview-name" class="truncate text-xs font-semibold text-white">Community name</span>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col gap-2.5 p-4"><p id="preview-desc" class="line-clamp-2 text-compact leading-relaxed text-muted-foreground">Add a description for your community.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Sector -->
+        <div id="create-step-sector" class="hidden-screen w-full max-w-[50rem]">
+          <div class="flex w-full flex-col items-center gap-8 rounded-3xl bg-surface px-8 py-10 shadow-sm">
+            <div class="flex flex-col items-center gap-3 text-center">
+              <h2 class="text-foreground text-3xl">Optimise the visibility of your community</h2>
+              <p class="text-muted-foreground">Reach top-notch members by completing your community information.</p>
+              <p class="text-muted-foreground">Select the sector your community belongs to.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-3">
+              <button type="button" class="sector-chip text-foreground cursor-pointer rounded-full bg-card px-6 py-2 text-sm font-semibold transition" data-selected="false" onclick="toggleSector(this)">Therapists</button>
+              <button type="button" class="sector-chip text-foreground cursor-pointer rounded-full bg-card px-6 py-2 text-sm font-semibold transition" data-selected="false" onclick="toggleSector(this)">Coaches</button>
+              <button type="button" class="sector-chip text-foreground cursor-pointer rounded-full bg-card px-6 py-2 text-sm font-semibold transition" data-selected="false" onclick="toggleSector(this)">Business</button>
+              <button type="button" class="sector-chip text-foreground cursor-pointer rounded-full bg-card px-6 py-2 text-sm font-semibold transition" data-selected="false" onclick="toggleSector(this)">Wellness</button>
+              <button type="button" class="sector-chip text-foreground cursor-pointer rounded-full bg-card px-6 py-2 text-sm font-semibold transition" data-selected="false" onclick="toggleSector(this)">Spiritual</button>
+              <button type="button" class="sector-chip text-foreground cursor-pointer rounded-full bg-card px-6 py-2 text-sm font-semibold transition" data-selected="false" onclick="toggleSector(this)">Other</button>
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
+              <button onclick="goToCreateStep('form')" class="cursor-pointer rounded-full bg-surface px-6 py-2 text-sm font-semibold text-foreground shadow-sm">Back</button>
+              <button id="create-sector-continue" disabled onclick="goToCreateStep('invite')" class="cursor-pointer rounded-full bg-accent/50 px-8 py-2 text-sm font-semibold text-muted-foreground transition disabled:cursor-not-allowed">Continue</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Invite -->
+        <div id="create-step-invite" class="hidden-screen w-full max-w-[32rem]">
+          <div class="flex w-full flex-col justify-center gap-4 rounded-3xl bg-surface px-6 py-8 text-center shadow-sm">
+            <div class="flex flex-col items-center gap-4 text-center">
+              <h2 class="text-foreground text-3xl">Invite members</h2>
+              <p class="text-muted-foreground text-sm">Get the most out of your community by inviting your friends and family.</p>
+            </div>
+            <div class="flex flex-col gap-4 text-left">
+              <div class="flex flex-col gap-1"><label class="text-muted-foreground text-xs font-semibold">Email #1</label><input type="email" placeholder="Enter member email" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-klein-500 focus:outline-none focus:ring-0" /></div>
+              <div class="flex flex-col gap-1"><label class="text-muted-foreground text-xs font-semibold">Email #2</label><input type="email" placeholder="Enter member email" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-klein-500 focus:outline-none focus:ring-0" /></div>
+              <div class="flex flex-col gap-1"><label class="text-muted-foreground text-xs font-semibold">Email #3</label><input type="email" placeholder="Enter member email" class="h-[3.375rem] w-full rounded-2xl border border-foreground/22 bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-klein-500 focus:outline-none focus:ring-0" /></div>
+            </div>
+            <div class="text-foreground flex items-center justify-end text-sm">
+              <button class="flex items-center gap-2 px-0 text-sm text-foreground"><i data-lucide="plus" class="h-4 w-4"></i>Add more</button>
+            </div>
+            <div class="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button onclick="finishCreate()" class="cursor-pointer rounded-3xl bg-surface px-[1.375rem] py-2.5 text-compact font-semibold text-secondary-foreground sm:min-w-[8rem]">Skip</button>
+              <button onclick="finishCreate()" class="cursor-pointer rounded-3xl bg-accent px-[1.375rem] py-2.5 text-compact font-semibold text-accent-foreground sm:min-w-[8rem]">Create</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  <!-- Toast -->
+  <div id="toast" class="pointer-events-none fixed bottom-6 right-6 z-[9999] hidden translate-y-2 rounded-xl bg-foreground px-4 py-3 text-sm font-medium text-background opacity-0 shadow-lg transition-all duration-300">
+    <span id="toast-text"></span>
+  </div>
+
+<script>
+  const COMMUNITIES = {
+    positivity: { name: 'Everyday Positivity', initials: 'EP', banner: 'images.jpeg', members: '1 member', posts: 0, isOwner: true },
+    mindful:   { name: 'Mindful Practice',      initials: 'MP', banner: 'https://picsum.photos/seed/nomei-mindful/480/220', members: '1.2k members', posts: 340, isOwner: false },
+    coaches:   { name: 'Coaches Circle',        initials: 'CC', banner: 'https://picsum.photos/seed/nomei-coaches/480/220', members: '86 members', posts: 12, isOwner: false },
+    spiritual: { name: 'Spiritual Growth',      initials: 'SP', banner: null, members: '523 members', posts: 98, isOwner: false },
+  };
+
+  const OWNER_ONLY_NAV_IDS = ['dash-nav-settings', 'dash-nav-marketplace', 'dash-nav-moderation', 'dash-nav-safeguard', 'dash-nav-statistics'];
+
+  function applyOwnerNavVisibility(isOwner) {
+    OWNER_ONLY_NAV_IDS.forEach((id) => {
+      document.getElementById(id).classList.toggle('hidden-screen', !isOwner);
+    });
+    document.getElementById('dash-nav-marketplace-buyer').classList.toggle('hidden-screen', isOwner);
+  }
+
+  function toggleFilterDropdown(event) {
+    event.stopPropagation();
+    document.getElementById('filter-dropdown').classList.toggle('hidden-screen');
+  }
+
+  function toggleSectorPill(el) {
+    const selected = el.dataset.selected === 'true';
+    el.dataset.selected = selected ? 'false' : 'true';
+    el.classList.toggle('border-primary', !selected);
+    el.classList.toggle('bg-accent', !selected);
+    el.classList.toggle('text-accent-foreground', !selected);
+    el.classList.toggle('font-semibold', !selected);
+    el.classList.toggle('shadow-sm', !selected);
+    el.classList.toggle('border-transparent', selected);
+    el.classList.toggle('bg-surface', selected);
+    el.classList.toggle('text-muted-foreground', selected);
+    el.classList.toggle('font-medium', selected);
+  }
+
+  function selectBrowseView(el) {
+    document.querySelectorAll('.browse-option').forEach((opt) => {
+      const isSelected = opt === el;
+      opt.dataset.selected = isSelected ? 'true' : 'false';
+      opt.classList.toggle('bg-accent/50', isSelected);
+      opt.classList.toggle('font-semibold', isSelected);
+      opt.classList.toggle('text-foreground', isSelected);
+      opt.classList.toggle('font-medium', !isSelected);
+      opt.classList.toggle('text-muted-foreground', !isSelected);
+      const check = opt.querySelector('.check-icon');
+      if (check) check.classList.toggle('hidden-screen', !isSelected);
+    });
+    document.getElementById('filter-dropdown').classList.add('hidden-screen');
+  }
+
+  document.addEventListener('click', (event) => {
+    const wrapper = document.getElementById('filter-wrapper');
+    const dropdown = document.getElementById('filter-dropdown');
+    if (wrapper && dropdown && !wrapper.contains(event.target)) {
+      dropdown.classList.add('hidden-screen');
+    }
+  });
+
+  function jumpTo(screen) {
+    document.querySelectorAll('.proto-screen').forEach(el => el.classList.add('hidden-screen'));
+    document.getElementById('screen-' + screen).classList.remove('hidden-screen');
+    window.scrollTo({ top: 0 });
+  }
+
+  function openCommunity(key) {
+    const c = COMMUNITIES[key];
+    document.getElementById('dash-banner-name').textContent = c.name;
+    document.getElementById('dash-banner-initials-text').textContent = c.initials;
+    const img = document.getElementById('dash-banner-img');
+    const fallback = document.getElementById('dash-banner-fallback');
+    if (c.banner) {
+      img.src = c.banner;
+      img.classList.remove('hidden-screen');
+      fallback.classList.add('hidden-screen');
+    } else {
+      img.classList.add('hidden-screen');
+      fallback.classList.remove('hidden-screen');
+    }
+    document.getElementById('dash-feed-subtitle').textContent = c.members;
+    document.getElementById('dash-posts-list').classList.toggle('hidden-screen', c.posts === 0);
+    document.getElementById('dash-empty-state').classList.toggle('hidden-screen', c.posts !== 0);
+    applyOwnerNavVisibility(c.isOwner);
+    jumpTo('dashboard');
+    showDashView('feed');
+  }
+
+  const DASH_VIEWS = ['feed', 'channel', 'members', 'settings', 'marketplace', 'marketplace-buyer', 'moderation', 'safeguard', 'statistics'];
+
+  function showDashView(view) {
+    DASH_VIEWS.forEach((v) => {
+      document.getElementById('dash-view-' + v).classList.toggle('hidden-screen', v !== view);
+      const nav = document.getElementById('dash-nav-' + v);
+      if (nav) {
+        nav.classList.remove('bg-accent/50', 'font-semibold', 'text-accent-foreground');
+        nav.classList.add('text-muted-foreground', 'font-medium');
+        if (v === view) {
+          nav.classList.add('bg-accent/50', 'font-semibold', 'text-accent-foreground');
+          nav.classList.remove('text-muted-foreground', 'font-medium');
+        }
+      }
+    });
+  }
+
+  const CHANNELS = {
+    general: {
+      title: '#general',
+      subtitle: 'General channel',
+      welcome: 'Welcome to #general',
+      welcomeSub: 'This is the start of the #general channel.',
+      placeholder: 'Message #general',
+      sendLabel: 'Send',
+    },
+    feedback: {
+      title: '#feedback',
+      subtitle: 'Anonymous feedback channel to contact community moderators',
+      welcome: 'Welcome to #feedback',
+      welcomeSub: 'This is the start of the #feedback channel.',
+      placeholder: 'Message #feedback',
+      sendLabel: 'Submit Feedback',
+    },
+  };
+
+  function openChannel(key) {
+    const c = CHANNELS[key];
+    document.getElementById('channel-title').textContent = c.title;
+    document.getElementById('channel-subtitle').textContent = c.subtitle;
+    document.getElementById('channel-welcome').textContent = c.welcome;
+    document.getElementById('channel-welcome-sub').textContent = c.welcomeSub;
+    document.getElementById('channel-input').textContent = c.placeholder;
+    document.getElementById('channel-send-label').textContent = c.sendLabel;
+    showDashView('channel');
+    ['general', 'feedback'].forEach((k) => {
+      const nav = document.getElementById('dash-nav-channel-' + k);
+      nav.classList.toggle('bg-accent/50', k === key);
+      nav.classList.toggle('font-semibold', k === key);
+      nav.classList.toggle('text-accent-foreground', k === key);
+      nav.classList.toggle('text-muted-foreground', k !== key);
+      nav.classList.toggle('font-medium', k !== key);
+    });
+  }
+
+  function updateComposer() {
+    const val = document.getElementById('dash-composer-input').value.trim();
+    const btn = document.getElementById('dash-composer-post');
+    const hasText = val.length > 0;
+    btn.disabled = !hasText;
+    btn.classList.toggle('bg-accent', hasText);
+    btn.classList.toggle('text-accent-foreground', hasText);
+    btn.classList.toggle('cursor-pointer', hasText);
+    btn.classList.toggle('bg-muted', !hasText);
+    btn.classList.toggle('text-muted-foreground', !hasText);
+    btn.classList.toggle('cursor-not-allowed', !hasText);
+  }
+
+  function clearComposer() {
+    document.getElementById('dash-composer-input').value = '';
+    updateComposer();
+  }
+
+  function focusComposer() {
+    const input = document.getElementById('dash-composer-input');
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    input.focus();
+  }
+
+  /* ── Marketplace: per-card menu, wizard modal, delete confirm ─────────── */
+  let editingListingCard = null;
+  let pendingDeleteListingCard = null;
+  let selectedArtifactName = null;
+  let selectedCoverImageDataUrl = null;
+
+  function resetCoverImageField() {
+    selectedCoverImageDataUrl = null;
+    document.getElementById('wizard-cover-input').value = '';
+    const preview = document.getElementById('wizard-cover-preview');
+    preview.src = '';
+    preview.classList.add('hidden-screen');
+    document.querySelectorAll('.wizard-cover-placeholder').forEach((el) => el.classList.remove('hidden-screen'));
+    document.getElementById('wizard-cover-remove').classList.add('hidden-screen');
+  }
+
+  function handleCoverImageSelect(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      selectedCoverImageDataUrl = e.target.result;
+      const preview = document.getElementById('wizard-cover-preview');
+      preview.src = selectedCoverImageDataUrl;
+      preview.classList.remove('hidden-screen');
+      document.querySelectorAll('.wizard-cover-placeholder').forEach((el) => el.classList.add('hidden-screen'));
+      document.getElementById('wizard-cover-remove').classList.remove('hidden-screen');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeCoverImage(event) {
+    event.stopPropagation();
+    resetCoverImageField();
+  }
+
+  function toggleListingMenu(event, btn) {
+    event.stopPropagation();
+    const menu = btn.nextElementSibling;
+    document.querySelectorAll('.listing-menu').forEach((m) => {
+      if (m !== menu) m.classList.add('hidden-screen');
+    });
+    menu.classList.toggle('hidden-screen');
+  }
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.listing-menu').forEach((m) => m.classList.add('hidden-screen'));
+  });
+
+  function editListing(btn) {
+    const card = btn.closest('.listing-card');
+    document.querySelectorAll('.listing-menu').forEach((m) => m.classList.add('hidden-screen'));
+    openListingWizard('edit', card);
+  }
+
+  function confirmDeleteListing(btn) {
+    const card = btn.closest('.listing-card');
+    document.querySelectorAll('.listing-menu').forEach((m) => m.classList.add('hidden-screen'));
+    pendingDeleteListingCard = card;
+    document.getElementById('delete-listing-overlay').classList.remove('hidden-screen');
+  }
+
+  function closeDeleteListingModal() {
+    pendingDeleteListingCard = null;
+    document.getElementById('delete-listing-overlay').classList.add('hidden-screen');
+  }
+
+  function deleteListingConfirmed() {
+    if (pendingDeleteListingCard) {
+      pendingDeleteListingCard.remove();
+    }
+    closeDeleteListingModal();
+    showToast('Listing deleted');
+  }
+
+  function openListingWizard(mode, card) {
+    editingListingCard = mode === 'edit' ? card : null;
+    document.getElementById('wizard-title').textContent = mode === 'edit' ? 'Edit listing' : 'New listing';
+    document.getElementById('wizard-publish-btn').textContent = mode === 'edit' ? 'Save changes' : 'Publish listing';
+
+    document.querySelectorAll('.artifact-option').forEach((opt) => {
+      opt.dataset.selected = 'false';
+      opt.classList.remove('border-primary', 'bg-accent/10');
+      opt.classList.add('border-border');
+    });
+    const nextBtn = document.getElementById('wizard-next-1');
+    nextBtn.disabled = true;
+    nextBtn.classList.add('cursor-not-allowed', 'bg-accent/50', 'text-muted-foreground');
+    nextBtn.classList.remove('cursor-pointer', 'bg-accent', 'text-accent-foreground');
+
+    resetCoverImageField();
+
+    if (mode === 'edit' && card) {
+      document.getElementById('wizard-title-input').value = card.dataset.title;
+      document.getElementById('wizard-price-input').value = card.dataset.price;
+      document.getElementById('wizard-desc-input').value = card.dataset.desc;
+      selectedArtifactName = card.dataset.title;
+      const existingImg = card.querySelector('img');
+      if (existingImg && existingImg.src) {
+        selectedCoverImageDataUrl = existingImg.src;
+        const preview = document.getElementById('wizard-cover-preview');
+        preview.src = existingImg.src;
+        preview.classList.remove('hidden-screen');
+        document.querySelectorAll('.wizard-cover-placeholder').forEach((el) => el.classList.add('hidden-screen'));
+        document.getElementById('wizard-cover-remove').classList.remove('hidden-screen');
+      }
+      goToWizardStep(2);
+    } else {
+      document.getElementById('wizard-title-input').value = '';
+      document.getElementById('wizard-price-input').value = '';
+      document.getElementById('wizard-desc-input').value = '';
+      selectedArtifactName = null;
+      goToWizardStep(1);
+    }
+
+    document.getElementById('listing-wizard-overlay').classList.remove('hidden-screen');
+  }
+
+  function closeListingWizard() {
+    document.getElementById('listing-wizard-overlay').classList.add('hidden-screen');
+    editingListingCard = null;
+  }
+
+  function goToWizardStep(step) {
+    [1, 2, 3].forEach((s) => {
+      document.getElementById('wizard-step-' + s).classList.toggle('hidden-screen', s !== step);
+      const dot = document.getElementById('wizard-dot-' + s);
+      dot.classList.toggle('bg-accent', s === step);
+      dot.classList.toggle('text-accent-foreground', s === step);
+      dot.classList.toggle('bg-muted', s !== step);
+      dot.classList.toggle('text-muted-foreground', s !== step);
+    });
+    if (step === 2) {
+      const titleInput = document.getElementById('wizard-title-input');
+      if (!titleInput.value.trim() && selectedArtifactName) {
+        titleInput.value = selectedArtifactName;
+      }
+    }
+    if (step === 3) {
+      const title = document.getElementById('wizard-title-input').value.trim() || selectedArtifactName || 'Untitled listing';
+      const price = document.getElementById('wizard-price-input').value || '0';
+      const desc = document.getElementById('wizard-desc-input').value || 'Describe what buyers will get...';
+      document.getElementById('wizard-confirm-title').textContent = title;
+      document.getElementById('wizard-confirm-desc').textContent = desc;
+      document.getElementById('wizard-confirm-price').textContent = '£' + price;
+    }
+  }
+
+  function selectArtifact(el, name) {
+    document.querySelectorAll('.artifact-option').forEach((opt) => {
+      const isSelected = opt === el;
+      opt.dataset.selected = isSelected ? 'true' : 'false';
+      opt.classList.toggle('border-primary', isSelected);
+      opt.classList.toggle('bg-accent/10', isSelected);
+      opt.classList.toggle('border-border', !isSelected);
+    });
+    selectedArtifactName = name;
+    const nextBtn = document.getElementById('wizard-next-1');
+    nextBtn.disabled = false;
+    nextBtn.classList.remove('cursor-not-allowed', 'bg-accent/50', 'text-muted-foreground');
+    nextBtn.classList.add('cursor-pointer', 'bg-accent', 'text-accent-foreground');
+  }
+
+  function publishListing() {
+    const isEdit = !!editingListingCard;
+    const title = document.getElementById('wizard-title-input').value.trim() || selectedArtifactName || 'Untitled listing';
+    const price = document.getElementById('wizard-price-input').value || '0';
+    const desc = document.getElementById('wizard-desc-input').value || '';
+
+    if (isEdit) {
+      editingListingCard.querySelector('.listing-title').textContent = title;
+      editingListingCard.querySelector('.listing-price').textContent = '£' + price;
+      editingListingCard.querySelector('.listing-desc').textContent = desc;
+      editingListingCard.dataset.title = title;
+      editingListingCard.dataset.price = price;
+      editingListingCard.dataset.desc = desc;
+      if (selectedCoverImageDataUrl) {
+        editingListingCard.querySelector('img').src = selectedCoverImageDataUrl;
+      }
+      showToast('Listing updated');
+    } else {
+      showToast('Listing published');
+    }
+    closeListingWizard();
+  }
+
+  /* ── Marketplace: listing preview modal ────────────────────────────────── */
+  const LISTING_DETAILS = {
+    'Calm Morning Audio Pack': {
+      type: 'audio',
+      author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' },
+      audioMeta: '0:15 &middot; from the full 8-minute track',
+    },
+    'Interview Confidence Coach': {
+      type: 'coaching',
+      author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' },
+      covers: [
+        'Talk through the nerves the night before',
+        "Reframe a rejection so it doesn't knock your confidence",
+        'Find calm answers for the tricky questions: gaps, redundancy',
+        "Walk in remembering what you're actually good at",
+      ],
+      note: 'This is a chat-based coach, not a live session. A typical conversation before an interview uses about 180 credits from your monthly plan.',
+    },
+    '8-Week Return to Work Plan': {
+      type: 'plan',
+      author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' },
+      milestones: [
+        { label: 'Find your footing again', range: 'Weeks 1-2', done: true },
+        { label: 'Put your story into words', range: 'Weeks 3-4', done: false },
+        { label: 'Put yourself out there', range: 'Weeks 5-6', done: false },
+        { label: 'Show up as yourself', range: 'Weeks 7-8', done: false },
+      ],
+    },
+    'Bedtime Wind-Down Audios': {
+      type: 'audio',
+      author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' },
+      audioMeta: '0:12 &middot; from the full 6-minute track',
+    },
+    'After a "No": Recovery Audios': {
+      type: 'audio',
+      author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' },
+      audioMeta: '0:10 &middot; from the full 5-minute track',
+    },
+    'Own Your Story Coach': {
+      type: 'coaching',
+      author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' },
+      covers: [
+        'Turn your career gaps into a clear narrative',
+        'Find the words for your CV summary',
+        'Rewrite your LinkedIn headline and About section',
+        'Practice answering "tell me about yourself"',
+      ],
+      note: 'This is a chat-based coach, not a live session. A typical conversation uses about 150 credits from your monthly plan.',
+    },
+    'Grounding Techniques Audio Guide': {
+      type: 'audio',
+      author: { name: 'Jane Smith', initials: 'JS', color: '#2a8bbf' },
+      audioMeta: '0:15 &middot; from the full 7-minute track',
+    },
+    'Client Intake Session Template': {
+      type: 'plan',
+      author: { name: 'Jane Smith', initials: 'JS', color: '#2a8bbf' },
+      milestones: [
+        { label: 'Welcome and consent', range: 'Session 1', done: true },
+        { label: 'Presenting concerns', range: 'Session 1', done: false },
+        { label: 'History and goals', range: 'Sessions 1-2', done: false },
+        { label: 'Care plan agreement', range: 'Session 2', done: false },
+      ],
+    },
+    '1:1 Supervision Session': {
+      type: 'coaching',
+      author: { name: 'Jane Smith', initials: 'JS', color: '#2a8bbf' },
+      covers: [
+        'Talk through a tricky case in confidence',
+        'Get a second perspective on your approach',
+        'Check in on your own wellbeing as a practitioner',
+        'Leave with one concrete next step',
+      ],
+      note: 'This is a live 1:1 video session, not a chat coach. Booking uses about 300 credits from your monthly plan.',
+    },
+  };
+
+  function openListingPreview(card) {
+    const title = card.dataset.title;
+    const details = LISTING_DETAILS[title] || { type: 'audio', author: { name: 'Kate Cocker', initials: 'KC', color: '#c2914a' }, audioMeta: '0:15' };
+    const img = card.querySelector('img');
+    const badge = card.querySelector('span.absolute, span.rounded-xl');
+
+    document.getElementById('preview-banner-img').src = img ? img.src : '';
+    document.getElementById('preview-category-badge').textContent = badge ? badge.textContent : '';
+    document.getElementById('preview-title').textContent = title;
+    document.getElementById('listing-preview-desc').textContent = card.dataset.desc;
+    document.getElementById('preview-price').textContent = '£' + card.dataset.price;
+
+    const avatar = document.getElementById('preview-author-avatar');
+    avatar.textContent = details.author.initials;
+    avatar.style.background = details.author.color;
+    document.getElementById('preview-author-name').textContent = details.author.name;
+
+    ['audio', 'coaching', 'plan'].forEach((t) => {
+      document.getElementById('preview-' + t + '-body').classList.toggle('hidden-screen', t !== details.type);
+    });
+
+    if (details.type === 'audio') {
+      document.getElementById('preview-audio-meta').innerHTML = details.audioMeta;
+    } else if (details.type === 'coaching') {
+      const list = document.getElementById('preview-coaching-list');
+      list.innerHTML = (details.covers || [])
+        .map((item) => '<li class="flex items-start gap-2 text-c1 text-foreground"><i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-primary"></i><span>' + item + '</span></li>')
+        .join('');
+      document.getElementById('preview-coaching-note').textContent = details.note;
+    } else if (details.type === 'plan') {
+      const list = document.getElementById('preview-plan-list');
+      list.innerHTML = (details.milestones || [])
+        .map((m) => {
+          const icon = m.done
+            ? '<span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white"><i data-lucide="check" class="h-3 w-3"></i></span>'
+            : '<span class="h-5 w-5 flex-shrink-0 rounded-full border-2 border-border"></span>';
+          const labelClass = m.done ? 'text-foreground font-semibold' : 'text-foreground';
+          return '<li class="flex items-center gap-3">' + icon + '<span><span class="block text-sm ' + labelClass + '">' + m.label + '</span><span class="block text-2xs text-muted-foreground">' + m.range + '</span></span></li>';
+        })
+        .join('');
+    }
+
+    document.getElementById('listing-preview-overlay').classList.remove('hidden-screen');
+    lucide.createIcons();
+  }
+
+  function closeListingPreview() {
+    document.getElementById('listing-preview-overlay').classList.add('hidden-screen');
+  }
+
+  function openStripeCheckout(title, price) {
+    const amount = '£' + parseFloat(price).toFixed(2);
+    document.getElementById('stripe-item-title').textContent = title;
+    document.getElementById('stripe-item-price').textContent = amount;
+    document.getElementById('stripe-pay-amount').textContent = amount;
+    document.getElementById('stripe-checkout-overlay').classList.remove('hidden-screen');
+  }
+
+  function openStripeCheckoutFromPreview() {
+    const title = document.getElementById('preview-title').textContent;
+    const price = document.getElementById('preview-price').textContent.replace('£', '');
+    openStripeCheckout(title, price);
+  }
+
+  function closeStripeCheckout() {
+    document.getElementById('stripe-checkout-overlay').classList.add('hidden-screen');
+  }
+
+  function completeStripePayment() {
+    closeStripeCheckout();
+    closeListingPreview();
+    showToast('Payment successful! Check your library.');
+  }
+
+  function toggleSector(el) {
+    const selected = el.dataset.selected === 'true';
+    el.dataset.selected = selected ? 'false' : 'true';
+    el.classList.toggle('bg-accent/50', !selected);
+    el.classList.toggle('shadow-sm', !selected);
+    el.classList.toggle('bg-card', selected);
+    const anySelected = Array.from(document.querySelectorAll('.sector-chip')).some((c) => c.dataset.selected === 'true');
+    const continueBtn = document.getElementById('create-sector-continue');
+    continueBtn.disabled = !anySelected;
+    continueBtn.classList.toggle('bg-accent', anySelected);
+    continueBtn.classList.toggle('text-accent-foreground', anySelected);
+    continueBtn.classList.toggle('bg-accent/50', !anySelected);
+    continueBtn.classList.toggle('text-muted-foreground', !anySelected);
+  }
+
+  function goToCreateStep(step) {
+    ['form', 'sector', 'invite'].forEach((s) => {
+      document.getElementById('create-step-' + s).classList.toggle('hidden-screen', s !== step);
+      const dot = document.getElementById('create-dot-' + s);
+      dot.classList.toggle('bg-accent', s === step);
+      dot.classList.toggle('text-accent-foreground', s === step);
+      dot.classList.toggle('bg-muted', s !== step);
+      dot.classList.toggle('text-muted-foreground', s !== step);
+    });
+  }
+
+  function updatePreview() {
+    const name = document.getElementById('create-name-input').value.trim();
+    const desc = document.getElementById('create-desc-input').value.trim();
+    document.getElementById('preview-name').textContent = name || 'Community name';
+    document.getElementById('preview-desc').textContent = desc || 'Add a description for your community.';
+    document.getElementById('preview-initials').textContent = name
+      ? name.split(' ').slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('')
+      : 'CO';
+    document.getElementById('create-name-count').textContent = name.length + '/120';
+    document.getElementById('create-desc-count').textContent = (500 - desc.length) + ' characters left';
+  }
+
+  function cancelCreate() {
+    resetCreateForm();
+    jumpTo('discover');
+  }
+
+  function finishCreate() {
+    showToast('Community created successfully');
+    setTimeout(() => {
+      resetCreateForm();
+      jumpTo('discover');
+    }, 900);
+  }
+
+  function resetCreateForm() {
+    document.getElementById('create-name-input').value = '';
+    document.getElementById('create-desc-input').value = '';
+    updatePreview();
+    document.querySelectorAll('.sector-chip').forEach((c) => {
+      c.dataset.selected = 'false';
+      c.classList.remove('bg-accent/50', 'shadow-sm');
+      c.classList.add('bg-card');
+    });
+    document.getElementById('create-sector-continue').disabled = true;
+    goToCreateStep('form');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-text').textContent = msg;
+    t.classList.remove('hidden');
+    requestAnimationFrame(() => t.classList.remove('opacity-0', 'translate-y-2'));
+    setTimeout(() => {
+      t.classList.add('opacity-0', 'translate-y-2');
+      setTimeout(() => t.classList.add('hidden'), 300);
+    }, 1600);
+  }
+
+  lucide.createIcons();
+</script>
+</body>
+</html>

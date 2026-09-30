@@ -1,0 +1,787 @@
+@import "tailwindcss";
+@import "./features/landing/landing.css";
+
+@variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Satoshi Variable";
+  src: url("/fonts/Satoshi-Variable.ttf") format("truetype-variations");
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi Variable";
+  src: url("/fonts/Satoshi-VariableItalic.ttf") format("truetype-variations");
+  font-weight: 300 900;
+  font-style: italic;
+}
+
+/* ─── Semantic tokens (shadcn-style, light mode) ─────────────────────────── */
+:root {
+  --background: #f8f9fa;
+  --foreground: #231921;
+  --card: #ffffff;
+  --card-foreground: #231921;
+  --popover: #ffffff;
+  --popover-foreground: #231921;
+  --primary: #3dbd8e;
+  --primary-foreground: #ffffff;
+  --secondary: #e9ecef;
+  --secondary-foreground: #231921;
+  --muted: #e9ecef;
+  --muted-foreground: #6b6470;
+  --accent: #cbe8df;
+  --accent-foreground: #1a5c47;
+  --destructive: #dc2626;
+  --border: #dde2ea;
+  --input: #dde2ea;
+  --ring: #3dbd8e;
+
+  --chart-1: #3dbd8e;
+  --chart-2: #6b6470;
+  --chart-3: #534ab7;
+  --chart-4: #2a8bbf;
+  --chart-5: #c2631a;
+
+  --sidebar: #edf0f5;
+  --sidebar-foreground: #231921;
+  --sidebar-primary: #3dbd8e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e9ecef;
+  --sidebar-accent-foreground: #231921;
+  --sidebar-border: #dde2ea;
+  --sidebar-ring: #3dbd8e;
+
+  /* Layout */
+  --sidebar-w: 230px;
+  --mobile-tab-h: 49px;
+  --mobile-fab-clearance: 68px;
+
+  --text-xsoft: #a09aa4;
+  --surface: #edf0f5;
+  --warning: #d97706;
+
+  /* Radius scale — base: 14px @ 16px root */
+  --radius: 0.875rem;
+  --radius-sm: calc(var(--radius) * 0.6);   /* 0.525rem  ≈  8px */
+  --radius-md: calc(var(--radius) * 0.8);   /* 0.700rem  ≈ 11px */
+  --radius-lg: var(--radius);               /* 0.875rem  ≈ 14px */
+  --radius-xl: calc(var(--radius) * 1.4);   /* 1.225rem  ≈ 20px */
+  --radius-2xl: calc(var(--radius) * 1.8);  /* 1.575rem  ≈ 25px */
+  --radius-3xl: calc(var(--radius) * 2.2);  /* 1.925rem  ≈ 31px */
+  --radius-4xl: calc(var(--radius) * 2.6);  /* 2.275rem  ≈ 36px */
+
+  /* Vision card slot colors */
+  --vc-1-bg: #dde2ea;  --vc-1-icon: #3d5abf;
+  --vc-2-bg: #eadde2;  --vc-2-icon: #bf3d5a;
+  --vc-3-bg: #ddeae2;  --vc-3-icon: #2d7a4a;
+  --vc-4-bg: #e8ddea;  --vc-4-icon: #7a2d9a;
+  --vc-5-bg: #dde8ea;  --vc-5-icon: #1a7a7a;
+  --vc-6-bg: #eae8dd;  --vc-6-icon: #9a7020;
+
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: var(--foreground);
+  background-color: var(--card);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────── */
+.dark {
+  --background: #141214;
+  --foreground: #f4f2f5;
+  --card: #1c1a1e;
+  --card-foreground: #f4f2f5;
+  --popover: #1c1a1e;
+  --popover-foreground: #f4f2f5;
+  --primary: #4ecf9e;
+  --primary-foreground: #0d0d0d;
+  --secondary: #2a272c;
+  --secondary-foreground: #f4f2f5;
+  --muted: #2a272c;
+  --muted-foreground: #a39ea8;
+  --accent: #243530;
+  --accent-foreground: #9fe8c9;
+  --destructive: #f87171;
+  --border: #2f2d36;
+  --input: #2f2d36;
+  --ring: #3dbd8e;
+  --chart-1: #4ecf9e;
+  --chart-2: #a39ea8;
+  --chart-3: #9b8fd9;
+  --chart-4: #6bb3e0;
+  --chart-5: #e59866;
+  --sidebar: #1a181c;
+  --sidebar-foreground: #f4f2f5;
+  --sidebar-primary: #3dbd8e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2a272c;
+  --sidebar-accent-foreground: #f4f2f5;
+  --sidebar-border: #2f2d36;
+  --sidebar-ring: #3dbd8e;
+  --text-xsoft: #7a7580;
+  --surface: #222028;
+  --warning: #fbbf24;
+
+  --color-board-bg: var(--secondary);
+  --color-board-photo: #4a4950;
+  --color-minimap-item: #BCBCC2;
+  --color-board-toolbar-icon: var(--card-foreground);
+
+  /* Named colors — dark equivalents */
+  --color-zen-pearl: #232130;
+  --color-zen-pearl-dark: #2a2838;
+  --color-umbra: #f0eef2;
+  --color-tetsuonando-black: oklch(88% 0.0212 186.7);
+  --color-tetsuonando-gray: oklch(70% 0.0151 184.62);
+  --color-mercury-gray: oklch(22% 0 0);
+  --color-primary-hover: #3dbd8e;
+
+  /* Vision card slot colors */
+  --vc-1-bg: #1c2840;  --vc-1-icon: #7090d8;
+  --vc-2-bg: #301820;  --vc-2-icon: #e87090;
+  --vc-3-bg: #152a1e;  --vc-3-icon: #50b870;
+  --vc-4-bg: #241535;  --vc-4-icon: #b070d8;
+  --vc-5-bg: #132028;  --vc-5-icon: #30aab0;
+  --vc-6-bg: #2a2010;  --vc-6-icon: #c8a040;
+}
+
+/* ─── Manifestation card gradients ───────────────────────────────────────── */
+:root {
+  --gradient-affirmation:
+    radial-gradient(ellipse at 24% 24%, rgba(195, 130, 105, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(155, 85, 65, 0.14) 0%, transparent 50%),
+    linear-gradient(148deg, #f2e8e4 0%, #ddc8c0 100%);
+  --gradient-visualization:
+    radial-gradient(ellipse at 24% 24%, rgba(82, 208, 168, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(42, 172, 132, 0.14) 0%, transparent 50%),
+    linear-gradient(148deg, #ddf2e8 0%, #bcddd0 100%);
+  --gradient-meditation:
+    radial-gradient(ellipse at 24% 24%, rgba(120, 90, 210, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(80, 55, 175, 0.14) 0%, transparent 50%),
+    linear-gradient(148deg, #ede8f5 0%, #cfc4e8 100%);
+  --gradient-motivational:
+    radial-gradient(ellipse at 24% 24%, rgba(210, 165, 85, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(165, 115, 45, 0.14) 0%, transparent 50%),
+    linear-gradient(148deg, #f4ecda 0%, #e2d0a8 100%);
+  --gradient-placeholder:
+    radial-gradient(ellipse at 24% 24%, rgba(61, 189, 142, 0.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(20, 155, 100, 0.20) 0%, transparent 50%),
+    linear-gradient(148deg, #c8edd8 0%, #94d4b8 100%);
+
+  /* Waveform stroke — dark shade of each type's hue, for light mode */
+  --waveform-stroke-affirmation: #7a3828;
+  --waveform-stroke-visualization: #1a5c44;
+  --waveform-stroke-meditation: #3d1f80;
+  --waveform-stroke-motivational: #7a4810;
+  --waveform-stroke-placeholder: #14583a;
+}
+
+.dark {
+  /* Manifestation card gradients — dark */
+  --gradient-affirmation:
+    radial-gradient(ellipse at 24% 24%, rgba(195, 100, 75, 0.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(155, 65, 45, 0.20) 0%, transparent 50%),
+    linear-gradient(148deg, #2c1f1c 0%, #3a2520 100%);
+  --gradient-visualization:
+    radial-gradient(ellipse at 24% 24%, rgba(62, 188, 148, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(32, 152, 112, 0.18) 0%, transparent 50%),
+    linear-gradient(148deg, #132420 0%, #1c342c 100%);
+  --gradient-meditation:
+    radial-gradient(ellipse at 24% 24%, rgba(130, 90, 220, 0.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(90, 55, 180, 0.20) 0%, transparent 50%),
+    linear-gradient(148deg, #1a1530 0%, #251c40 100%);
+  --gradient-motivational:
+    radial-gradient(ellipse at 24% 24%, rgba(210, 155, 65, 0.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(165, 105, 35, 0.20) 0%, transparent 50%),
+    linear-gradient(148deg, #271d0c 0%, #362815 100%);
+  --gradient-placeholder:
+    radial-gradient(ellipse at 24% 24%, rgba(61, 169, 122, 0.32) 0%, transparent 55%),
+    radial-gradient(ellipse at 76% 76%, rgba(20, 135, 90, 0.22) 0%, transparent 50%),
+    linear-gradient(148deg, #122620 0%, #1a342a 100%);
+
+  /* Waveform stroke — white tint for dark mode */
+  --waveform-stroke-affirmation: rgba(255, 255, 255, 0.80);
+  --waveform-stroke-visualization: rgba(255, 255, 255, 0.80);
+  --waveform-stroke-meditation: rgba(255, 255, 255, 0.80);
+  --waveform-stroke-motivational: rgba(255, 255, 255, 0.80);
+  --waveform-stroke-placeholder: rgba(255, 255, 255, 0.80);
+}
+
+/* ─── Tailwind design tokens ─────────────────────────────────────────────── */
+@theme {
+  /* Fonts */
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "DM Serif Display", ui-serif, Georgia, serif;
+  --font-serif: "Lora", ui-serif, Georgia, serif;
+  --font-satoshi-variable: "Satoshi Variable", "sans-serif";
+  /* Legacy aliases */
+  --font-dm-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-dm-serif: "DM Serif Display", ui-serif, Georgia, serif;
+  --font-lora: "Lora", ui-serif, Georgia, serif;
+  --font-rubik: "Rubik", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Semantic color utilities (reference :root vars → dark-mode aware) ── */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Core semantic utilities ─────────────────────────────────────────── */
+  --color-primary: var(--primary);             /* Strong green #3dbd8e */
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: #5c9a94;
+  --color-accent: var(--accent);               /* Light mint #cbe8df */
+  --color-accent-foreground: var(--accent-foreground);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--text-xsoft);
+  --color-surface: var(--surface);
+
+  /* ── Feature palette ─────────────────────────────────────────────────── */
+  --color-post-photo: #bf2a8b;
+  --color-post-plan: #7ab52a;
+
+  /* ── Vision Board ───────────────────────────────────────────────────── */
+  --color-board-bg: #F4F4F5;
+  --color-board-photo: #D4D4D4;
+  --shadow-board-photo: 0 1px 3px 0 #0000000D;
+  --color-board-toolbar-icon: #122031;
+
+  /* ── Nav icon colors (one per feature) ──────────────────────────────── */
+  --color-blue: #2a8bbf;    /* Coaching */
+  --color-indigo: #534ab7;  /* Companion */
+  --color-orange: #c2631a;  /* Plans */
+  --color-violet: #6c4fc2;  /* Audio Tracks */
+  --color-red: #c23a3a;     /* Reflections */
+  --color-green: #0F6E56;   /* Vision Board */
+  --color-yellow: #c2a61a;  /* Communities */
+  --color-purple: #8b45c2;  /* Progress */
+
+/* ── Extended palette scales ─────────────────────────────────────────── */
+  --color-gray-50: oklch(0.9417 0.0052 247.88);  /* #E9ECEF */
+  --color-gray-100: oklch(0.9543 0.0074 260.73); /* #EDF0F5 */
+  --color-gray-200: oklch(0.9163 0.0365 303.11); /* #e8def8 */
+  --color-gray-300: oklch(0.9543 0.0074 260.73); /* #edf0f5 */
+  --color-gray-400: oklch(0.5667 0.0163 308.14); /* #79747e */
+
+  --color-orange-100: oklch(98.64% 0.0025 48.72);
+  --color-orange-500: oklch(92.2% 0.0246 36.51);
+  --color-orange-800: oklch(59.24% 0.0366 39.26);
+  --color-orange-900: oklch(24.12% 0.0673 37.82);
+
+  --color-teal-100: oklch(98.93% 0.0025 165.08);
+  --color-teal-500: oklch(93.85% 0.0236 216.73);
+  --color-teal-800: oklch(55.45% 0.0742 220.15);
+  --color-teal-900: oklch(21.87% 0.0362 220.7);
+
+  --color-green-100: oklch(99.05% 0.0026 106.45);
+  --color-green-500: oklch(95.77% 0.0363 118.9);
+  --color-green-800: oklch(54.33% 0.0485 119.44);
+  --color-green-900: oklch(19.4% 0.0403 118.39);
+
+  --color-purple-500: oklch(90.85% 0.0396 310.26);
+  --color-purple-600: oklch(53.6% 0.1743 293.43);
+  --color-purple-700: oklch(46.47% 0.2133 305.44);
+  --color-purple-800: oklch(57.5% 0.0697 322.9);
+  --color-purple-900: oklch(14.36% 0.0331 309.99);
+
+  --color-klein-100: oklch(98.57% 0.0026 286.35);
+  --color-klein-500: oklch(89.67% 0.0368 285.63);
+  --color-klein-800: oklch(54.34% 0.0465 286.27);
+
+  --color-pink-100: oklch(98.72% 0.0034 325.6);
+  --color-pink-500: oklch(91.51% 0.0363 341.47);
+  --color-pink-800: oklch(56.47% 0.0517 342.79);
+
+  --color-tetsuonando-black: oklch(32.98% 0.0212 186.7);
+  --color-tetsuonando-gray: oklch(48.88% 0.0151 184.62);
+  --color-mercury-gray: oklch(94.01% 0 0);
+  --color-umbra: oklch(23.93% 0 0);
+  --color-zen-pearl: #f7f8f9;
+  --color-zen-pearl-dark: #e0e5e9;
+
+  /* ── Misc ────────────────────────────────────────────────────────────── */
+  --shadow: 0 2px 12px rgba(35, 25, 33, 0.07);
+  --grid-template-columns-auto-fill: repeat(auto-fill, minmax(250px, 1fr));
+  --breakpoint-1700: 1700px;
+
+  /* Custom font sizes */
+  --text-2xs: 0.6875rem;      /* 11px */
+  --text-xs-mid: 0.78125rem;  /* 12.5px */
+  --text-compact: 0.8125rem;  /* 13px */
+  --text-sm-tight: 0.84375rem; /* 13.5px */
+}
+
+/* ─── App typography scale ───────────────────────────────────────────────── */
+
+.text-h1 {
+  font-family: var(--font-dm-sans);
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.text-h2 {
+  font-family: var(--font-dm-sans);
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.text-h3 {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.text-b {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.text-p {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.text-c1 {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.text-c2 {
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* ─── Chart / bar palette (analytics-specific, not in :root semantic block) ─ */
+:root {
+  --color-chart-energy-body: rgba(147, 197, 253, 0.8);
+  --color-chart-energy-mental: rgba(167, 243, 208, 0.8);
+  --color-chart-energy-emotional: rgba(196, 181, 253, 0.8);
+
+  --color-chart-theme-1: rgba(255, 183, 178, 0.85);
+  --color-chart-theme-2: rgba(255, 218, 185, 0.85);
+  --color-chart-theme-3: rgba(253, 242, 181, 0.85);
+  --color-chart-theme-4: rgba(193, 225, 193, 0.85);
+  --color-chart-theme-5: rgba(163, 228, 215, 0.85);
+
+  --color-chart-emotion-stress: rgba(255, 140, 140, 0.8);
+  --color-chart-emotion-joy: rgba(253, 242, 181, 0.9);
+  --color-chart-emotion-sadness: rgba(147, 197, 253, 0.8);
+  --color-chart-emotion-hope: rgba(163, 228, 215, 0.85);
+  --color-chart-emotion-frustration: rgba(255, 183, 178, 0.85);
+  --color-tooltip-bg: rgba(35, 25, 33, 0.85);
+
+  --color-bar-streak: #A7F3D0;
+  --color-bar-energy-body: #93C5FD;
+  --color-bar-energy-mental: #A7F3D0;
+  --color-bar-energy-emotional: #C4B5FD;
+
+  --color-bar-theme-1: #FFB7B2;
+  --color-bar-theme-2: #FFDAB9;
+  --color-bar-theme-3: #FDF2B5;
+  --color-bar-theme-4: #C1E1C1;
+  --color-bar-theme-5: #A3E4D7;
+
+  --color-bar-emotion-stress: #FF8C8C;
+  --color-bar-emotion-joy: #FDF2B5;
+  --color-bar-emotion-sadness: #93C5FD;
+  --color-bar-emotion-hope: #A3E4D7;
+  --color-bar-emotion-frustration: #FFB7B2;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 6px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 3px;
+}
+
+@plugin 'tailwind-scrollbar' {
+  nocompatible: true;
+  preferredstrategy: "pseudoelements";
+}
+
+.scrollbar-1px {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.scrollbar-1px::-webkit-scrollbar {
+  height: 1px;
+  width: 1px;
+}
+
+.scrollbar-1px::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-1px::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 1px;
+}
+
+/* Custom breakpoint for member requests layout */
+@media (min-width: 1700px) {
+  .member-requests-layout-row {
+    flex-direction: row !important;
+  }
+  
+  .member-requests-layout-col {
+    height: 100% !important;
+    width: 50% !important;
+  }
+  
+  .member-requests-layout-col-full {
+    margin-bottom: 0 !important;
+    margin-right: 1rem !important;
+    height: 100% !important;
+    width: 50% !important;
+  }
+}
+
+/* Add this new utility class */
+.grid-cols-auto-fill {
+  grid-template-columns: var(--grid-template-columns-auto-fill);
+}
+
+/*AudioCard styles*/
+
+.audio-card-player {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.audio-card-player.rhap_stacked {
+  padding: 0 !important;
+}
+
+.audio-card-player .rhap_progress-bar,
+.audio-card-player .rhap_volume-bar {
+  background-color: #e5e7eb;
+}
+
+.audio-card-player .rhap_progress-filled,
+.audio-card-player .rhap_volume-filled {
+  background-color: #c8cdd6;
+}
+
+.audio-card-player .rhap_progress-indicator {
+  background: #ffffff;
+  border: 1.5px solid #c8cdd6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  top: -4px;
+}
+
+.audio-card-player .rhap_volume-indicator {
+  background: #ffffff;
+  border: 1.5px solid #c8cdd6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  z-index: 3;
+  width: 12px;
+  height: 12px;
+  top: -4px;
+  margin-left: -6px;
+}
+
+.audio-card-player .rhap_play-pause-button {
+  width: 48px !important;
+  height: 48px !important;
+  font-size: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audio-card-player .rhap_main.rhap_stacked {
+  width: 100%;
+  padding: 0 12px;
+}
+
+/* Progress bar on top row, times below */
+.audio-card-player .rhap_progress-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 4px;
+  margin-bottom: 6px;
+}
+
+.audio-card-player .rhap_progress-container {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin: 0 !important;
+}
+
+.audio-card-player .rhap_current-time {
+  grid-column: 1;
+  grid-row: 2;
+  text-align: left;
+}
+
+.audio-card-player .rhap_total-time {
+  grid-column: 2;
+  grid-row: 2;
+  text-align: right;
+}
+
+/* Controls: loop | play | volume-stretches */
+.audio-card-player .rhap_controls-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.audio-card-player .rhap_additional-controls {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.audio-card-player .rhap_main-controls {
+  flex: 0 0 auto;
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.audio-card-player .rhap_volume-controls {
+  flex: 1 1 0%;
+  width: auto;
+  padding-right: 0;
+}
+
+@media (min-width: 768px) {
+  .rhap_controls-section {
+    margin-top: 0 !important;
+  }
+
+  .rhap_main.rhap_stacked {
+    padding-top: 0 !important;
+  }
+}
+
+/* ─── Reflection mood gradients (calendar cards) ────────────────────────── */
+:root {
+  --refl-gradient-awful:   radial-gradient(ellipse at 24% 24%, rgba(175,95,110,0.22)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(110,50,70,0.14)   0%, transparent 50%), linear-gradient(148deg, #ede5e7 0%, #d8c8cc 100%);
+  --refl-gradient-bad:     radial-gradient(ellipse at 24% 24%, rgba(195,130,105,0.20) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(155,85,65,0.13)   0%, transparent 50%), linear-gradient(148deg, #f2e8e4 0%, #ddc8c0 100%);
+  --refl-gradient-down:    radial-gradient(ellipse at 24% 24%, rgba(130,145,200,0.20) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(85,100,165,0.12)  0%, transparent 50%), linear-gradient(148deg, #e8eaf5 0%, #cdd0e8 100%);
+  --refl-gradient-rough:   radial-gradient(ellipse at 24% 24%, rgba(210,165,85,0.20)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(165,115,45,0.13)  0%, transparent 50%), linear-gradient(148deg, #f4ecda 0%, #e2d0a8 100%);
+  --refl-gradient-neutral: radial-gradient(ellipse at 24% 24%, rgba(218,205,188,0.25) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(175,162,144,0.15) 0%, transparent 50%), linear-gradient(148deg, #f0ede8 0%, #dcd6ce 100%);
+  --refl-gradient-okay:    radial-gradient(ellipse at 24% 24%, rgba(160,208,152,0.20) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(110,168,100,0.13) 0%, transparent 50%), linear-gradient(148deg, #eaf4e4 0%, #d0e4c8 100%);
+  --refl-gradient-good:    radial-gradient(ellipse at 24% 24%, rgba(125,208,178,0.20) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(78,170,140,0.13)  0%, transparent 50%), linear-gradient(148deg, #e4f4ee 0%, #c8e4da 100%);
+  --refl-gradient-great:   radial-gradient(ellipse at 24% 24%, rgba(82,208,168,0.22)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(42,172,132,0.14)  0%, transparent 50%), linear-gradient(148deg, #ddf2e8 0%, #bcddd0 100%);
+  --refl-gradient-amazing: radial-gradient(ellipse at 24% 24%, rgba(62,220,165,0.24)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(30,182,130,0.15)  0%, transparent 50%), linear-gradient(148deg, #d8f2e6 0%, #b0d8c4 100%);
+  --refl-gradient-default: radial-gradient(ellipse at 24% 24%, rgba(220,208,188,0.22) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(175,162,144,0.14) 0%, transparent 50%), linear-gradient(148deg, #f0ede8 0%, #dcd6ce 100%);
+}
+
+.dark {
+  --refl-gradient-awful:   radial-gradient(ellipse at 24% 24%, rgba(175,95,110,0.38)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(110,50,70,0.25)   0%, transparent 50%), linear-gradient(148deg, #2d1e22 0%, #251619 100%);
+  --refl-gradient-bad:     radial-gradient(ellipse at 24% 24%, rgba(195,130,105,0.33) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(155,85,65,0.22)   0%, transparent 50%), linear-gradient(148deg, #2d2019 0%, #251813 100%);
+  --refl-gradient-down:    radial-gradient(ellipse at 24% 24%, rgba(130,145,200,0.33) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(85,100,165,0.22)  0%, transparent 50%), linear-gradient(148deg, #1e1f32 0%, #161825 100%);
+  --refl-gradient-rough:   radial-gradient(ellipse at 24% 24%, rgba(210,165,85,0.30)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(165,115,45,0.20)  0%, transparent 50%), linear-gradient(148deg, #2d2818 0%, #231f10 100%);
+  --refl-gradient-neutral: radial-gradient(ellipse at 24% 24%, rgba(180,170,155,0.28) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(135,125,110,0.18) 0%, transparent 50%), linear-gradient(148deg, #262320 0%, #1e1c18 100%);
+  --refl-gradient-okay:    radial-gradient(ellipse at 24% 24%, rgba(120,185,108,0.32) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(80,148,68,0.22)   0%, transparent 50%), linear-gradient(148deg, #1c2a18 0%, #152011 100%);
+  --refl-gradient-good:    radial-gradient(ellipse at 24% 24%, rgba(85,185,165,0.32)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(45,130,148,0.22)  0%, transparent 50%), linear-gradient(148deg, #192830 0%, #111c22 100%);
+  --refl-gradient-great:   radial-gradient(ellipse at 24% 24%, rgba(52,185,152,0.40)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(28,158,120,0.28)  0%, transparent 50%), linear-gradient(148deg, #143228 0%, #0d2218 100%);
+  --refl-gradient-amazing: radial-gradient(ellipse at 24% 24%, rgba(42,210,145,0.48)  0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(20,175,108,0.34)  0%, transparent 50%), linear-gradient(148deg, #0f3820 0%, #082814 100%);
+  --refl-gradient-default: radial-gradient(ellipse at 24% 24%, rgba(180,170,155,0.25) 0%, transparent 55%), radial-gradient(ellipse at 76% 76%, rgba(135,125,110,0.15) 0%, transparent 50%), linear-gradient(148deg, #242120 0%, #1c1a18 100%);
+}
+
+.audio-card-player .rhap_time {
+  font-size: 12px;
+}
+
+.dark .audio-card-player .rhap_progress-bar,
+.dark .audio-card-player .rhap_volume-bar {
+  background-color: var(--border);
+}
+
+.dark .audio-card-player .rhap_progress-filled,
+.dark .audio-card-player .rhap_volume-filled {
+  background-color: var(--muted-foreground);
+}
+
+.dark .audio-card-player .rhap_progress-indicator,
+.dark .audio-card-player .rhap_volume-indicator {
+  background: var(--card);
+  border-color: var(--muted-foreground);
+}
+
+.dark .audio-card-player .rhap_time {
+  color: var(--muted-foreground);
+}
+
+@keyframes fadeInSoft {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeOutUpSoft {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.98);
+  }
+}
+
+@keyframes growIn {
+  from {
+    opacity: 0;
+    transform: scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer base {
+  .custom-audio-player .rhap_button-clear {
+    overflow: visible !important;
+  }
+
+  .audiplayer-controls-flex-none .rhap_controls-section {
+    display: block !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    flex-basis: auto !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+}
+
+@keyframes cursor-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes coachFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes streamWordIn {
+  from {
+    opacity: 0;
+    color: var(--card);
+  }
+  to {
+    opacity: 1;
+    color: var(--foreground);
+  }
+}
+
+@keyframes reshuffleColumnRing {
+  0%   { box-shadow: 0 0 0 0px color-mix(in srgb, var(--primary) 0%, transparent); }
+  12%  { box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent); }
+  68%  { box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent); }
+  100% { box-shadow: 0 0 0 0px color-mix(in srgb, var(--primary) 0%, transparent); }
+}
+
+@layer utilities {
+  .animate-cursor-blink {
+    animation: cursor-blink 1.4s steps(1, end) infinite;
+  }
+
+  .animate-coach-fade-up {
+    animation: coachFadeUp 0.3s ease both;
+  }
+
+  .animate-pop-down {
+    animation: popDown 0.17s ease both;
+  }
+
+  .animate-stream-word {
+    animation-name: streamWordIn;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
+  }
+}
